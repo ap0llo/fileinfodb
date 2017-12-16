@@ -2,7 +2,7 @@
 using NodaTime;
 using static System.IO.Path;
 
-namespace FileInfoDb.Core
+namespace FileInfoDb.Core.Hashing
 {
     public sealed class HashedFileInfo : IEquatable<HashedFileInfo>
     {

@@ -6,7 +6,10 @@
 
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SQLite" Version="2.0.0" />
     <PackageReference Include="NodaTime" Version="2.2.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />  
+    <PackageReference Include="Dapper" Version="1.50.4" />
   </ItemGroup>
 
 </Project>

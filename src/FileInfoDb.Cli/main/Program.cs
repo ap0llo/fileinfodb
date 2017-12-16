@@ -1,7 +1,8 @@
-﻿using FileInfoDb.Core;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
+using FileInfoDb.Core.Hashing;
+using FileInfoDb.Core.Hashing.Cache;
 
 namespace FileInfoDb.Cli
 {
@@ -14,9 +15,11 @@ namespace FileInfoDb.Cli
             stopwatch.Start();
 #endif
 
-            var hashProvider = new SHA256HashProvider();
+            var cacheDb = new Database("cache.db");
+            var cache = new DatabaseBackedHashedFileInfoCache(cacheDb);
+            IHashProvider hashProvider = new CachingHashProvider(cache, new SHA256HashProvider());
 
-            var files = Directory.EnumerateFiles(args[0], "*", SearchOption.AllDirectories);
+            var files = Directory.EnumerateFiles(args[0], "*.mp3", SearchOption.AllDirectories);
 
             foreach(var file in files)
             {
@@ -25,6 +28,7 @@ namespace FileInfoDb.Cli
                 var hashFileInfo = hashProvider.GetFileHash(file);
                 Console.WriteLine($"\t{hashFileInfo.Hash}");
             }
+
 
 #if DEBUG
             stopwatch.Stop();

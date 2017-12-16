@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace FileInfoDb.Core
+namespace FileInfoDb.Core.Hashing
 {
     public sealed class HashValue : IEquatable<HashValue>
     {
