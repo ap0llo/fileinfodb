@@ -9,6 +9,6 @@ namespace FileInfoDb.Core.Hashing.Cache
     {
         void AddOrUpdateHashedFileInfo(HashedFileInfo fileInfo);
 
-        (bool success, HashedFileInfo fileinfo) TryGetHashedFileInfo(string path, Instant lastWriteTime, long length, HashAlgorithm algorithm);        
+        (bool success, HashedFileInfo fileinfo) TryGetHashedFileInfo(FileProperties file, HashAlgorithm algorithm);        
     }
 }

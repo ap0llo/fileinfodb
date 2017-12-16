@@ -23,7 +23,7 @@ namespace FileInfoDb.Core.Hashing
                 var hashBytes = sha256.ComputeHash(fileStream);
                 var hash = new HashValue(BitConverter.ToString(hashBytes).Replace("-", ""), HashAlgorithm.SHA256);
 
-                return new HashedFileInfo(fileInfo.FullName, fileInfo.LastWriteTimeUtc.ToInstant(), fileInfo.Length, hash);                
+                return new HashedFileInfo(FileProperties.FromFileInfo(fileInfo), hash);                
             }             
         }
     }

@@ -28,8 +28,9 @@ namespace FileInfoDb.Core.Hashing.Cache
             using (var fileStream = fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 fileInfo.Refresh();
+                var fileProperties = FileProperties.FromFileInfo(fileInfo);
 
-                var (cacheHit, hashedFileInfo) = m_Cache.TryGetHashedFileInfo(fileInfo.FullName, fileInfo.LastWriteTimeUtc.ToInstant(), fileInfo.Length, m_InnerHashProvider.Algorithm);
+                var (cacheHit, hashedFileInfo) = m_Cache.TryGetHashedFileInfo(fileProperties, m_InnerHashProvider.Algorithm);
                 
                 if(cacheHit)
                 {

@@ -1,36 +1,22 @@
 ﻿using System;
-using NodaTime;
-using static System.IO.Path;
 
 namespace FileInfoDb.Core.Hashing
 {
     public sealed class HashedFileInfo : IEquatable<HashedFileInfo>
     {
-        public string Path { get; }
-
-        public Instant LastWriteTime { get; }
-
-        public long Length { get; }
+        public FileProperties File { get; }
 
         public HashValue Hash { get; }
 
 
-        public HashedFileInfo(string path, Instant lastWriteTime, long length, HashValue hash)
+        public HashedFileInfo(FileProperties file, HashValue hash)
         {
-            if (String.IsNullOrWhiteSpace(path))
-                throw new ArgumentException("Value must not be empty", nameof(path));
-
-            if (!IsPathRooted(path))
-                throw new ArgumentException("Value must be a rooted path", nameof(path));
-
-            Path = GetFullPath(path);
-            LastWriteTime = lastWriteTime;
-            Length = length;
+            File = file ?? throw new ArgumentNullException(nameof(file));
             Hash = hash ?? throw new ArgumentNullException(nameof(hash));
         }
 
 
-        public override int GetHashCode() => StringComparer.OrdinalIgnoreCase.GetHashCode(Path);
+        public override int GetHashCode() => File.GetHashCode();
 
         public override bool Equals(object obj) => Equals(obj as HashedFileInfo);
 
@@ -42,10 +28,7 @@ namespace FileInfoDb.Core.Hashing
             if (ReferenceEquals(this, other))
                 return true;
 
-            return StringComparer.OrdinalIgnoreCase.Equals(Path, other.Path) &&
-                LastWriteTime == other.LastWriteTime &&
-                Length == other.Length &&
-                Hash.Equals(other.Hash);
+            return File.Equals(other.File) && Hash.Equals(other.Hash);
         }
     }
 }

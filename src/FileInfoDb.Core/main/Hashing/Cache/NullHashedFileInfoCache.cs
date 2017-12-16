@@ -12,6 +12,6 @@ namespace FileInfoDb.Core.Hashing.Cache
             // nop
         }
 
-        public (bool success, HashedFileInfo fileinfo) TryGetHashedFileInfo(string path, Instant lastWriteTime, long length, HashAlgorithm algorithm) => (false, null);
+        public (bool success, HashedFileInfo fileinfo) TryGetHashedFileInfo(FileProperties file, HashAlgorithm algorithm) => (false, null);
     }
 }

@@ -32,16 +32,16 @@ namespace FileInfoDb.Core.Hashing.Cache
                     )
                     VALUES (@path, @lastWriteTimeTicks, @length, @algorithm, @hash)",
 
-                    ("path" , fileInfo.Path.ToLower()),
-                    ("lastWriteTimeTicks" ,fileInfo.LastWriteTime.ToUnixTimeTicks()),
-                    ("length" , fileInfo.Length),
+                    ("path" , fileInfo.File.Path.ToLower()),
+                    ("lastWriteTimeTicks" ,fileInfo.File.LastWriteTime.ToUnixTimeTicks()),
+                    ("length" , fileInfo.File.Length),
                     ("algorithm" , fileInfo.Hash.Algorithm.ToString()),
                     ("hash" ,fileInfo.Hash.Value.ToUpper())
                 );
             }
         }
 
-        public (bool success, HashedFileInfo fileinfo) TryGetHashedFileInfo(string path, Instant lastWriteTime, long length, HashAlgorithm algorithm)
+        public (bool success, HashedFileInfo fileinfo) TryGetHashedFileInfo(FileProperties file, HashAlgorithm algorithm)
         {
             using (var connection = m_Database.OpenConnection())
             {
@@ -57,15 +57,15 @@ namespace FileInfoDb.Core.Hashing.Cache
                 var hash = connection.QuerySingleOrDefault<string>(query, 
                 new
                 {
-                    path = path.ToLower(),
-                    lastWriteTimeTicks = lastWriteTime.ToUnixTimeTicks(),
-                    length = length,
+                    path = file.Path.ToLower(),
+                    lastWriteTimeTicks = file.LastWriteTime.ToUnixTimeTicks(),
+                    length = file.Length,
                     algorithm = algorithm.ToString()
                 });
 
                 return hash == null
                     ? (false, null)
-                    : (true, new HashedFileInfo(path, lastWriteTime, length, new HashValue(hash, algorithm)));                
+                    : (true, new HashedFileInfo(file, new HashValue(hash, algorithm)));                
             }
         }
     }
