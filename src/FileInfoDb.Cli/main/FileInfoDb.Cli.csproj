@@ -5,4 +5,8 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\FileInfoDb.Core\main\FileInfoDb.Core.csproj" />
+  </ItemGroup>
+  
 </Project>
