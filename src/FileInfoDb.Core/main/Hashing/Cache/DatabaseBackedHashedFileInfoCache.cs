@@ -6,6 +6,10 @@ using Dapper;
 
 namespace FileInfoDb.Core.Hashing.Cache
 {
+    /// <summary>
+    /// Implementation of <see cref="IHashedFileInfoCache"/> taht is using 
+    /// a relatational database to store cache values
+    /// </summary>
     public class DatabaseBackedHashedFileInfoCache : IHashedFileInfoCache
     {
         readonly Database m_Database;
@@ -43,6 +47,9 @@ namespace FileInfoDb.Core.Hashing.Cache
 
         public (bool success, HashedFileInfo fileinfo) TryGetHashedFileInfo(FileProperties file, HashAlgorithm algorithm)
         {
+            // if both Length and LastWriteTime of the file match we value
+            // in the database, we assume the hash hasn't changed either
+
             using (var connection = m_Database.OpenConnection())
             {
                 var query = $@"

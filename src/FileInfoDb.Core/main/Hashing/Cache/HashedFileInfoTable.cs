@@ -3,6 +3,9 @@ using FileInfoDb.Core.Utilities;
 
 namespace FileInfoDb.Core.Hashing.Cache
 {
+    /// <summary>
+    /// Helper class that defines the schema for the database table holding the cached file hashes
+    /// </summary>
     static class HashedFileInfoTable
     {
         public const string Name = "HashedFileInfo";        

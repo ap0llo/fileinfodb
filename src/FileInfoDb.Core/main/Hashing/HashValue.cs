@@ -59,6 +59,5 @@ namespace FileInfoDb.Core.Hashing
             return StringComparer.OrdinalIgnoreCase.Equals(Value, other.Value) &&
                 Algorithm == other.Algorithm;
         }
-
     }
 }

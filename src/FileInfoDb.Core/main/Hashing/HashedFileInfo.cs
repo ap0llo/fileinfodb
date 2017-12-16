@@ -2,10 +2,19 @@
 
 namespace FileInfoDb.Core.Hashing
 {
+    /// <summary>
+    /// Data-type used to provied the hash of a file
+    /// </summary>
     public sealed class HashedFileInfo : IEquatable<HashedFileInfo>
     {
+        /// <summary>
+        /// The file that was hashed
+        /// </summary>
         public FileProperties File { get; }
 
+        /// <summary>
+        /// The file's hash
+        /// </summary>
         public HashValue Hash { get; }
 
 

@@ -10,10 +10,12 @@ using System.Text;
 
 namespace FileInfoDb.Core.Hashing.Cache
 {
+    /// <summary>
+    /// Helper class for accessing the SQLite-based cache 
+    /// </summary>
     public sealed class Database
     {
         readonly string m_ConnectionString;
-        readonly string m_DatabaseFilePath;
         readonly ILogger<Database> m_Logger;
         static readonly object s_Lock = new object();
         bool m_FirstAccess = true;
@@ -28,9 +30,7 @@ namespace FileInfoDb.Core.Hashing.Cache
 
         public Database(ILogger<Database> logger, string databaseFilePath)
         {
-            m_Logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            m_DatabaseFilePath = databaseFilePath ?? throw new ArgumentNullException(nameof(databaseFilePath));
-
+            m_Logger = logger ?? throw new ArgumentNullException(nameof(logger));            
             m_ConnectionString = new SqliteConnectionStringBuilder
             {
                 DataSource = databaseFilePath
@@ -40,6 +40,8 @@ namespace FileInfoDb.Core.Hashing.Cache
 
         public IDbConnection OpenConnection()
         {
+            // on first access, ensure the databse is compatible
+            // and the schema was created
             lock (s_Lock)
             {
                 if (m_FirstAccess)
@@ -48,7 +50,7 @@ namespace FileInfoDb.Core.Hashing.Cache
                     m_FirstAccess = false;
                 }
             }
-
+            
             return DoOpenConnection();
         }
 
@@ -66,6 +68,8 @@ namespace FileInfoDb.Core.Hashing.Cache
         {
             using (var connection = DoOpenConnection())
             {
+                // if the SchemaInfo table exists, we assume all required
+                // tables are present in the database
                 if (connection.TableExists(SchemaInfoTable.Name))
                 {
                     CheckSchema();
@@ -79,7 +83,6 @@ namespace FileInfoDb.Core.Hashing.Cache
 
         void CreateSchema()
         {
-            // create schema
             m_Logger.LogInformation($"Creating schema in database");
 
             using (var connection = DoOpenConnection())
@@ -112,7 +115,6 @@ namespace FileInfoDb.Core.Hashing.Cache
                     }
                 }
             }
-        }
-        
+        }        
     }
 }

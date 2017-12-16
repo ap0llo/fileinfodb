@@ -6,12 +6,24 @@ using static System.IO.Path;
 
 namespace FileInfoDb.Core.Hashing
 {
+    /// <summary>
+    /// Provides information about a file
+    /// </summary>
     public sealed class FileProperties : IEquatable<FileProperties>
     {
+        /// <summary>
+        /// The file's full, absolute path 
+        /// </summary>
         public string Path { get; }
 
+        /// <summary>
+        /// The time of the fil's last modification
+        /// </summary>
         public Instant LastWriteTime { get; }
 
+        /// <summary>
+        /// The file's size in bytes
+        /// </summary>
         public long Length { get; }
         
 
@@ -47,6 +59,10 @@ namespace FileInfoDb.Core.Hashing
         }
 
         
+        /// <summary>
+        /// Creates a new instance of <see cref="FileProperties"/>
+        /// from the specified <see cref="FileInfo"/>
+        /// </summary>
         public static FileProperties FromFileInfo(FileInfo fileInfo)
         {
             if (fileInfo == null)
@@ -54,7 +70,5 @@ namespace FileInfoDb.Core.Hashing
 
             return new FileProperties(fileInfo.FullName, fileInfo.LastWriteTimeUtc.ToInstant(), fileInfo.Length);
         }
-
-
     }
 }

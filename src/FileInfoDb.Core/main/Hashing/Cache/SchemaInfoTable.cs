@@ -3,6 +3,12 @@ using FileInfoDb.Core.Utilities;
 
 namespace FileInfoDb.Core.Hashing.Cache
 {
+    /// <summary>
+    /// Helper class that defines the schema for the SchmeaInfo table.
+    /// This table is used to store meta-information about the schema
+    /// and determines if a given database is compatible with the 
+    /// current application version
+    /// </summary>
     static class SchemaInfoTable
     {
         public const string Name = "SchemaInfo";        

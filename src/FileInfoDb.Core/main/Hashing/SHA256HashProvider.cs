@@ -7,7 +7,6 @@ namespace FileInfoDb.Core.Hashing
 {
     public class SHA256HashProvider : IHashProvider
     {
-
         public HashAlgorithm Algorithm => HashAlgorithm.SHA256;
 
 

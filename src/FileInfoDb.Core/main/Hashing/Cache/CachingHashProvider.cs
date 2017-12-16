@@ -4,6 +4,10 @@ using NodaTime.Extensions;
 
 namespace FileInfoDb.Core.Hashing.Cache
 {
+    /// <summary>
+    /// Implementation of <see cref="IHashProvider"/> that uses a cache to avoid 
+    /// calculating a file's hash when possible
+    /// </summary>
     public class CachingHashProvider : IHashProvider
     {
         readonly IHashedFileInfoCache m_Cache;
@@ -24,23 +28,24 @@ namespace FileInfoDb.Core.Hashing.Cache
         {
             // open and lock file to prevent modifications while determining hash
             var fileInfo = new FileInfo(path);
-
             using (var fileStream = fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                fileInfo.Refresh();
+                // refresh file info in case it was changed between creating the FileInfo object and getting the file lock
+                fileInfo.Refresh(); 
                 var fileProperties = FileProperties.FromFileInfo(fileInfo);
 
-                var (cacheHit, hashedFileInfo) = m_Cache.TryGetHashedFileInfo(fileProperties, m_InnerHashProvider.Algorithm);
-                
+                // try to get the file's hash from the cache
+                var (cacheHit, hashedFileInfo) = m_Cache.TryGetHashedFileInfo(fileProperties, m_InnerHashProvider.Algorithm);                
                 if(cacheHit)
                 {
+                    // cache hit => return cached value
                     return hashedFileInfo;
                 }
             }
 
+            // cache miss => calculate hash and store value in the cache
             var newHashedFileInfo = m_InnerHashProvider.GetFileHash(path);
             m_Cache.AddOrUpdateHashedFileInfo(newHashedFileInfo);
-
             return newHashedFileInfo;
         }
     }
