@@ -6,6 +6,7 @@ namespace FileInfoDb.Core.Hashing
 {
     public enum HashAlgorithm
     {
-        SHA256
+        SHA256 = 0,
+        MD5 = 1
     }
 }
