@@ -13,4 +13,11 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\main\FileInfoDb.Core.csproj" />
+  </ItemGroup>
+
+
+
+
 </Project>
