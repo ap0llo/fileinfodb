@@ -17,7 +17,16 @@
     <ProjectReference Include="..\main\FileInfoDb.Core.csproj" />
   </ItemGroup>
 
-
+  <!-- 
+    Tests in this projects require access to a MySQL server.
+    Connection details are loaded by the tests from environment variables
+    This target runs before the actual Test target and ensures all     
+    required variables are set
+  -->
+  <Target Name="CheckTestEnvironment" BeforeTargets="Test">
+    <Message Text="Checking if the test environment has been set up for running test in $(TargetName)" />
+    <CheckEnvironmentVariables Names="FILEINFODB_TEST_MYSQLURI" />
+  </Target>
 
 
 </Project>
