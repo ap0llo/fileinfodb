@@ -109,7 +109,7 @@ namespace FileInfoDb.Core.Hashing.Cache
 
                     if (schemaVersion != SchemaVersion)
                     {
-                        throw new IncompatibleSchmeaException(
+                        throw new IncompatibleSchemaException(
                             supportedVersion: SchemaVersion,
                             databaseVersion: schemaVersion);
                     }
