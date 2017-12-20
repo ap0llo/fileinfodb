@@ -1,6 +1,6 @@
 using System;
 using System.Data;
-using FileInfoDb.Core.Utilities;
+using Grynwald.Utilities.Data;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
 

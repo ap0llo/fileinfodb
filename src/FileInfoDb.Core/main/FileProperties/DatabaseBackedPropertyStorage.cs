@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Dapper;
+using Grynwald.Utilities.Data;
 using FileInfoDb.Core.Hashing;
-using FileInfoDb.Core.Utilities;
 
 namespace FileInfoDb.Core.FileProperties
 {

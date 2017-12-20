@@ -1,5 +1,5 @@
 using System.Data;
-using FileInfoDb.Core.Utilities;
+using Grynwald.Utilities.Data;
 
 namespace FileInfoDb.Core.Hashing.Cache
 {

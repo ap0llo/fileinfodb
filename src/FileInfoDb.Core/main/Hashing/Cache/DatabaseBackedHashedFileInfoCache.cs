@@ -1,8 +1,8 @@
 using System;
 using NodaTime;
 using Microsoft.Data.Sqlite;
-using FileInfoDb.Core.Utilities;
 using Dapper;
+using Grynwald.Utilities.Data;
 
 namespace FileInfoDb.Core.Hashing.Cache
 {

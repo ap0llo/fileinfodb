@@ -1,4 +1,4 @@
-﻿using FileInfoDb.Core.Utilities;
+﻿using Grynwald.Utilities.Data;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;

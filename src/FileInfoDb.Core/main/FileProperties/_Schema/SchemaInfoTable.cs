@@ -1,5 +1,5 @@
+using Grynwald.Utilities.Data;
 using System.Data;
-using FileInfoDb.Core.Utilities;
 
 namespace FileInfoDb.Core.FileProperties
 {
