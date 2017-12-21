@@ -2,11 +2,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FileInfoDb.Cli", "FileInfoDb.Cli", "{769C44C5-1136-4F16-B31E-2399A7E27DB3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FileInfoDb", "FileInfoDb", "{769C44C5-1136-4F16-B31E-2399A7E27DB3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileInfoDb.Cli", "FileInfoDb.Cli\main\FileInfoDb.Cli.csproj", "{8D7B85BA-EA3E-44E6-9689-0658C9D558C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileInfoDb", "FileInfoDb\main\FileInfoDb.csproj", "{8D7B85BA-EA3E-44E6-9689-0658C9D558C1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileInfoDb.Cli.Test", "FileInfoDb.Cli\test\FileInfoDb.Cli.Test.csproj", "{49475282-4AD7-4BB6-A220-90DE1E1661B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileInfoDb.Test", "FileInfoDb\test\FileInfoDb.Test.csproj", "{49475282-4AD7-4BB6-A220-90DE1E1661B2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FileInfoDb.Core", "FileInfoDb.Core", "{E32CDC2D-1C0A-4F49-954C-77CCD84A657A}"
 EndProject

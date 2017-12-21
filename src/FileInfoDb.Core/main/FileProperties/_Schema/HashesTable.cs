@@ -26,7 +26,7 @@ namespace FileInfoDb.Core.FileProperties
                     {Column.Id}             INTEGER PRIMARY KEY AUTO_INCREMENT,
                     {Column.Hash}           VARCHAR(128) CHARACTER SET utf8 COLLATE utf8_general_ci UNIQUE NOT NULL,
                     {Column.Algorithm}      VARCHAR(10)  CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-                    CONSTRAINT UnqiueHash UNIQUE ({Column.Hash}, {Column.Algorithm})
+                    CONSTRAINT UniqueHash UNIQUE ({Column.Hash}, {Column.Algorithm})
                 );
             ");
         }

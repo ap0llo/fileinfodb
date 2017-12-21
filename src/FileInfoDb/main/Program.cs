@@ -4,12 +4,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using CommandLine;
+using FileInfoDb.Cli;
 using FileInfoDb.Core.FileProperties;
 using FileInfoDb.Core.Hashing;
 using FileInfoDb.Core.Hashing.Cache;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace FileInfoDb.Cli
+namespace FileInfoDb
 {
     
     class Program
