@@ -2,8 +2,8 @@
 
 namespace FileInfoDb.Cli
 {
-    [Verb("get-property")]
-    class GetPropertyArgs : ArgsBase
+    [Verb(CommandNames.GetProperty)]
+    class GetPropertyArgs : DatabaseArgs
     {
         [Option("file", Required = true)]
         public string FilePath { get; set; }

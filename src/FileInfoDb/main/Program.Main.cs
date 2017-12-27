@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using CommandLine;
+﻿using CommandLine;
 using FileInfoDb.Cli;
-using FileInfoDb.Core.FileProperties;
-using FileInfoDb.Core.Hashing;
+using FileInfoDb.Config;
 using Grynwald.Utilities.Squirrel;
 using Grynwald.Utilities.Squirrel.Installation;
 using Grynwald.Utilities.Squirrel.Updating;
-using Microsoft.Extensions.Logging.Abstractions;
-using FileInfoDb.Config;
-using FileInfoDb.Core.Hashing.Cache;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
 
 namespace FileInfoDb
 {
@@ -28,11 +24,27 @@ namespace FileInfoDb
                 .Build()
                 .HandleInstallationEvents();
 
+            var parser = new Parser(settings =>
+            {
+                settings.IgnoreUnknownArguments = true;
+                settings.HelpWriter = null;
+            });                       
+            var verbose = parser
+                .ParseArguments<BaseArgs>(args)
+                .MapResult(
+                    (BaseArgs opts) => opts.Verbose,
+                    errs => false
+                );
+                
+            var loggerFactory = new LoggerFactory();
+            if (verbose)
+                loggerFactory.AddConsole(LogLevel.Information);
+            
             using (new ExecutionTimeLogger())
-            using (var updater = new Updater(Configuration.Current.UpdateOptions))
+            using (var updater = new Updater(Configuration.Current.UpdateOptions, loggerFactory.CreateLogger<Updater>()))
             {
                 updater.Start();
-                var program = new Program();
+                var program = new Program(loggerFactory.CreateLogger<Program>());
                 return program.Run(args);
             }
         }
@@ -51,7 +63,6 @@ namespace FileInfoDb
                     Debugger.Launch();
                 }
             }
-        }
- 
+        }       
     }
 }

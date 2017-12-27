@@ -5,8 +5,8 @@ using System.Text;
 
 namespace FileInfoDb.Cli
 {
-    [Verb("init")]
-    class InitArgs : ArgsBase
+    [Verb(CommandNames.Init)]
+    class InitArgs : DatabaseArgs
     {
     }
 }
