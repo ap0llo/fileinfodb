@@ -40,7 +40,7 @@ namespace FileInfoDb
             if (verbose)
                 loggerFactory.AddConsole(LogLevel.Information);
             
-            using (new ExecutionTimeLogger())
+            using (verbose ? (IDisposable) new ExecutionTimeLogger() : NullDisposable.Instance)
             using (var updater = new Updater(Configuration.Current.UpdateOptions, loggerFactory.CreateLogger<Updater>()))
             {
                 updater.Start();

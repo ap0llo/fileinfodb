@@ -5,9 +5,6 @@ namespace FileInfoDb
 {
     class ExecutionTimeLogger : IDisposable
     {
-
-#if DEBUG
-
         readonly Stopwatch m_Stopwatch;
 
         public ExecutionTimeLogger()
@@ -21,10 +18,6 @@ namespace FileInfoDb
             m_Stopwatch.Stop();
             Console.WriteLine($"Completed, Elapsed time {m_Stopwatch.Elapsed}");
         }
-#else
-        public void Dispose()
-        {}
-#endif
 
     }
 }
