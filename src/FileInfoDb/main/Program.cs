@@ -54,20 +54,18 @@ namespace FileInfoDb
 
         static int Run(string[] args) 
         {
-
             // Setup
             //var cacheDb = new Database("cache.db");
             //var cache = new DatabaseBackedHashedFileInfoCache(cacheDb);
             //IHashProvider hashProvider = new CachingHashProvider(cache, new SHA256HashProvider());
             s_HashProvider = new SHA256HashProvider();
 
-
             // Run Command
-            var parsed = Parser.Default.ParseArguments<InitOptions, SetPropertyOptions, GetPropertyOptions>(args);
+            var parsed = Parser.Default.ParseArguments<InitArgs, SetPropertyArgs, GetPropertyArgs>(args);
             return parsed.MapResult(
-                (Func<InitOptions, int>)Init,
-                (Func<SetPropertyOptions, int>)SetProperty,
-                (Func<GetPropertyOptions, int>)GetProperty,
+                (Func<InitArgs, int>)Init,
+                (Func<SetPropertyArgs, int>)SetProperty,
+                (Func<GetPropertyArgs, int>)GetProperty,
                 (IEnumerable<Error> errors) =>
                 {
                     Console.WriteLine("Invalid arguments.");
@@ -78,14 +76,14 @@ namespace FileInfoDb
             
         }
 
-        static int Init(InitOptions opts)
+        static int Init(InitArgs opts)
         {
             var db = GetDatabase(opts);
             db.Create();
             return 0;
         }
 
-        static int SetProperty(SetPropertyOptions opts)
+        static int SetProperty(SetPropertyArgs opts)
         {
             var hashedFile = s_HashProvider.GetFileHash(opts.FilePath);
             var db = GetDatabase(opts);
@@ -96,7 +94,7 @@ namespace FileInfoDb
             return 0;
         }
 
-        static int GetProperty(GetPropertyOptions opts)
+        static int GetProperty(GetPropertyArgs opts)
         {
             var hashedFile = s_HashProvider.GetFileHash(opts.FilePath);
             var db = GetDatabase(opts);
@@ -113,7 +111,7 @@ namespace FileInfoDb
         }
 
 
-        static PropertiesDatabase GetDatabase(OptionsBase opts) => 
+        static PropertiesDatabase GetDatabase(ArgsBase opts) => 
             new MySqlPropertiesDatabase(NullLogger<MySqlPropertiesDatabase>.Instance, new Uri(opts.DatabaseUri));
     }
 }

@@ -2,7 +2,7 @@
 
 namespace FileInfoDb.Cli
 {
-    class OptionsBase
+    class ArgsBase
     { 
         [Option("uri", Required= true)]
         public string DatabaseUri { get; set; }

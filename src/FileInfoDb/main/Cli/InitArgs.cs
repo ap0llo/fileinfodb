@@ -6,7 +6,7 @@ using System.Text;
 namespace FileInfoDb.Cli
 {
     [Verb("init")]
-    class InitOptions : OptionsBase
+    class InitArgs : ArgsBase
     {
     }
 }

@@ -3,7 +3,7 @@
 namespace FileInfoDb.Cli
 {
     [Verb("set-property")]
-    class SetPropertyOptions : OptionsBase
+    class SetPropertyArgs : ArgsBase
     {
         [Option("file", Required = true)]
         public string FilePath { get; set; }

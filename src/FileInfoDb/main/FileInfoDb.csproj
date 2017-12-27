@@ -36,10 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Cli\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="config.Debug.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
