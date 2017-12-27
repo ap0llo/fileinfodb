@@ -13,10 +13,10 @@ namespace FileInfoDb.Core.Hashing.Cache
     /// <summary>
     /// Helper class for accessing the SQLite-based cache 
     /// </summary>
-    public sealed class Database
+    public sealed class CacheDatabase
     {
         readonly string m_ConnectionString;
-        readonly ILogger<Database> m_Logger;
+        readonly ILogger<CacheDatabase> m_Logger;
         static readonly object s_Lock = new object();
         bool m_FirstAccess = true;
 
@@ -24,13 +24,16 @@ namespace FileInfoDb.Core.Hashing.Cache
         public const int SchemaVersion = 1;
 
 
-        public Database(string databaseFilePath) : this(NullLogger<Database>.Instance, databaseFilePath)
+        public CacheDatabase(string databaseFilePath) : this(NullLogger<CacheDatabase>.Instance, databaseFilePath)
         {
         }
 
-        public Database(ILogger<Database> logger, string databaseFilePath)
+        public CacheDatabase(ILogger<CacheDatabase> logger, string databaseFilePath)
         {
-            m_Logger = logger ?? throw new ArgumentNullException(nameof(logger));            
+            m_Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            
+            Directory.CreateDirectory(Path.GetDirectoryName(databaseFilePath));
+            
             m_ConnectionString = new SqliteConnectionStringBuilder
             {
                 DataSource = databaseFilePath

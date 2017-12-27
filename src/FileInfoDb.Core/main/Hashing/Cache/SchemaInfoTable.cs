@@ -32,7 +32,7 @@ namespace FileInfoDb.Core.Hashing.Cache
                 );
 
                 INSERT INTO {Name} ({Column.Name}, {Column.Version}) 
-                VALUES ('SchemaInfo', {Database.SchemaVersion});
+                VALUES ('SchemaInfo', {CacheDatabase.SchemaVersion});
             ");
         }
     }

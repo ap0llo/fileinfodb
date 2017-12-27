@@ -11,6 +11,8 @@ using Grynwald.Utilities.Squirrel;
 using Grynwald.Utilities.Squirrel.Installation;
 using Grynwald.Utilities.Squirrel.Updating;
 using Microsoft.Extensions.Logging.Abstractions;
+using FileInfoDb.Config;
+using FileInfoDb.Core.Hashing.Cache;
 
 namespace FileInfoDb
 {
@@ -55,11 +57,17 @@ namespace FileInfoDb
         static int Run(string[] args) 
         {
             // Setup
-            //var cacheDb = new Database("cache.db");
-            //var cache = new DatabaseBackedHashedFileInfoCache(cacheDb);
-            //IHashProvider hashProvider = new CachingHashProvider(cache, new SHA256HashProvider());
             s_HashProvider = new SHA256HashProvider();
 
+            var hashingOptions = Configuration.Current.HashingOptions;
+            if(hashingOptions.EnableCache)
+            {
+                var cacheDb = new CacheDatabase(hashingOptions.CachePath);
+                var cache = new DatabaseBackedHashedFileInfoCache(cacheDb);
+                s_HashProvider = new CachingHashProvider(cache, s_HashProvider);
+            }
+
+            
             // Run Command
             var parsed = Parser.Default.ParseArguments<InitArgs, SetPropertyArgs, GetPropertyArgs>(args);
             return parsed.MapResult(

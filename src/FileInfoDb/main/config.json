@@ -12,4 +12,9 @@
     // defaut: 1 hour
     "Interval": "01:00:00"
   }
+  //,
+ //"Hashing": {
+ //  "EnableCache": true,
+ //  "CachePath": "%APPDATA%\\FileInfoDb\\hashing.cache.db"
+ //}
 }

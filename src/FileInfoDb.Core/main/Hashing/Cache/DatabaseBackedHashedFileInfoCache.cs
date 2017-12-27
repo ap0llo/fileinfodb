@@ -12,10 +12,10 @@ namespace FileInfoDb.Core.Hashing.Cache
     /// </summary>
     public class DatabaseBackedHashedFileInfoCache : IHashedFileInfoCache
     {
-        readonly Database m_Database;
+        readonly CacheDatabase m_Database;
 
 
-        public DatabaseBackedHashedFileInfoCache(Database database)
+        public DatabaseBackedHashedFileInfoCache(CacheDatabase database)
         {
             m_Database = database ?? throw new ArgumentNullException(nameof(database));
         }
