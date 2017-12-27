@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Microsoft.Extensions.Logging;
 using NodaTime.Extensions;
 
 namespace FileInfoDb.Core.Hashing.Cache
@@ -10,6 +11,7 @@ namespace FileInfoDb.Core.Hashing.Cache
     /// </summary>
     public class CachingHashProvider : IHashProvider
     {
+        readonly ILogger m_Logger;
         readonly IHashedFileInfoCache m_Cache;
         readonly IHashProvider m_InnerHashProvider;
 
@@ -17,8 +19,9 @@ namespace FileInfoDb.Core.Hashing.Cache
         public HashAlgorithm Algorithm => m_InnerHashProvider.Algorithm;
 
 
-        public CachingHashProvider(IHashedFileInfoCache cache, IHashProvider innerHashProvider)
+        public CachingHashProvider(ILogger logger, IHashedFileInfoCache cache, IHashProvider innerHashProvider)
         {
+            m_Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             m_Cache = cache ?? throw new ArgumentNullException(nameof(cache));
             m_InnerHashProvider = innerHashProvider ?? throw new ArgumentNullException(nameof(innerHashProvider));
         }
@@ -38,6 +41,7 @@ namespace FileInfoDb.Core.Hashing.Cache
                 var (cacheHit, hashedFileInfo) = m_Cache.TryGetHashedFileInfo(fileProperties, m_InnerHashProvider.Algorithm);                
                 if(cacheHit)
                 {
+                    m_Logger.LogInformation($"Hash for file '{fileInfo.FullName}' was present in cache, using cached value");
                     // cache hit => return cached value
                     return hashedFileInfo;
                 }
@@ -45,6 +49,7 @@ namespace FileInfoDb.Core.Hashing.Cache
 
             // cache miss => calculate hash and store value in the cache
             var newHashedFileInfo = m_InnerHashProvider.GetFileHash(path);
+            m_Logger.LogInformation($"Saving hash for file '{fileInfo.FullName}' to cache");
             m_Cache.AddOrUpdateHashedFileInfo(newHashedFileInfo);
             return newHashedFileInfo;
         }

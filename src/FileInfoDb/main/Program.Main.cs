@@ -44,7 +44,7 @@ namespace FileInfoDb
             using (var updater = new Updater(Configuration.Current.UpdateOptions, loggerFactory.CreateLogger<Updater>()))
             {
                 updater.Start();
-                var program = new Program(loggerFactory.CreateLogger<Program>());
+                var program = new Program(loggerFactory.CreateLogger<Program>(), loggerFactory);
                 return program.Run(args);
             }
         }

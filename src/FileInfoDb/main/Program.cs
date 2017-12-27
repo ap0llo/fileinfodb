@@ -15,11 +15,13 @@ namespace FileInfoDb
     partial class Program
     {
         readonly ILogger<Program> m_Logger;
+        readonly LoggerFactory m_LoggerFactory;
 
 
-        public Program(ILogger<Program> logger)
+        public Program(ILogger<Program> logger, LoggerFactory loggerFactory)
         {
             m_Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            m_LoggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
         }
 
 
@@ -94,7 +96,7 @@ namespace FileInfoDb
         IHashProvider GetHashProvider()
         {
             // Setup
-            IHashProvider provider = new SHA256HashProvider();
+            IHashProvider provider = new SHA256HashProvider(m_LoggerFactory.CreateLogger<SHA256HashProvider>());
 
             var hashingOptions = Configuration.Current.HashingOptions;
             if (hashingOptions.EnableCache)
@@ -103,7 +105,7 @@ namespace FileInfoDb
 
                 var cacheDb = new CacheDatabase(hashingOptions.CachePath);
                 var cache = new DatabaseBackedHashedFileInfoCache(cacheDb);
-                provider = new CachingHashProvider(cache, provider);
+                provider = new CachingHashProvider(m_LoggerFactory.CreateLogger<CachingHashProvider>(), cache, provider);
             }
 
             return provider;
