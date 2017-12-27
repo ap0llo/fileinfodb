@@ -7,7 +7,6 @@ using CommandLine;
 using FileInfoDb.Cli;
 using FileInfoDb.Core.FileProperties;
 using FileInfoDb.Core.Hashing;
-using FileInfoDb.Options;
 using Grynwald.Utilities.Squirrel;
 using Grynwald.Utilities.Squirrel.Installation;
 using Grynwald.Utilities.Squirrel.Updating;
@@ -15,7 +14,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace FileInfoDb
 {
-    
+
     class Program
     {
         static IHashProvider s_HashProvider;
@@ -25,15 +24,15 @@ namespace FileInfoDb
             LaunchDebugger(args);
             
             InstallerBuilder.CreateConsoleApplicationBuilder()       
-                .SaveResourceToFile(Assembly.GetExecutingAssembly(), "FileInfoDb.config.json", SpecialDirectory.ApplicationRootDirectory, ConfigFileNames.ApplicationConfigFile, overwriteOnUpdate: false)               
+                .SaveResourceToFile(Assembly.GetExecutingAssembly(), "FileInfoDb.config.json", SpecialDirectory.ApplicationRootDirectory, Configuration.ConfigFileName, overwriteOnUpdate: false)               
                 .Build()
                 .HandleInstallationEvents();
 
             using (new ExecutionTimeLogger())
-            using (var updater = new Updater(new UpdateOptions()))
+            using (var updater = new Updater(Configuration.Current.UpdateOptions))
             {
                 updater.Start();
-                return Run(args);                
+                return Run(args);
             }
         }
 
