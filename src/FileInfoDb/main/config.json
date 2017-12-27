@@ -1,0 +1,15 @@
+﻿{
+  "Update": {
+    "Enable": true,
+    "Source": "GitHub",
+    // the path to load updates from (needs to be compatible with the selected source)
+    // in the value, environment variables can be used
+    "Path": "https://www.github.com/ap0llo/fileinfodb",
+    "InstallPreReleaseVersions": true,
+
+    // The interval between update checks
+    // Format: (D).hh:mm:ss
+    // defaut: 1 hour
+    "Interval": "01:00:00"
+  }
+}

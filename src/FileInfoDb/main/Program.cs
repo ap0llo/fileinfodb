@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
+using System.Reflection;
 using CommandLine;
 using FileInfoDb.Cli;
 using FileInfoDb.Core.FileProperties;
 using FileInfoDb.Core.Hashing;
-using FileInfoDb.Core.Hashing.Cache;
+using FileInfoDb.Options;
+using Grynwald.Utilities.Squirrel;
+using Grynwald.Utilities.Squirrel.Installation;
+using Grynwald.Utilities.Squirrel.Updating;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace FileInfoDb
@@ -18,10 +21,26 @@ namespace FileInfoDb
         static IHashProvider s_HashProvider;
 
         static int Main(string[] args)
-        {
-        #if DEBUG
+        {            
+            LaunchDebugger(args);
+            
+            InstallerBuilder.CreateConsoleApplicationBuilder()       
+                .SaveResourceToFile(Assembly.GetExecutingAssembly(), "FileInfoDb.config.json", SpecialDirectory.ApplicationRootDirectory, ConfigFileNames.ApplicationConfigFile, overwriteOnUpdate: false)               
+                .Build()
+                .HandleInstallationEvents();
 
-            if(args.Any(x => StringComparer.OrdinalIgnoreCase.Equals(x, "--debug")))
+            using (new ExecutionTimeLogger())
+            using (var updater = new Updater(new UpdateOptions()))
+            {
+                updater.Start();
+                return Run(args);                
+            }
+        }
+
+        [Conditional("DEBUG")]
+        private static void LaunchDebugger(string[] args)
+        {
+            if (args.Any(x => StringComparer.OrdinalIgnoreCase.Equals(x, "--debug")))
             {
                 if (Debugger.IsAttached)
                 {
@@ -32,12 +51,10 @@ namespace FileInfoDb
                     Debugger.Launch();
                 }
             }
+        }
 
-
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-        #endif
-
+        static int Run(string[] args) 
+        {
 
             // Setup
             //var cacheDb = new Database("cache.db");
@@ -48,30 +65,18 @@ namespace FileInfoDb
 
             // Run Command
             var parsed = Parser.Default.ParseArguments<InitOptions, SetPropertyOptions, GetPropertyOptions>(args);
-            var exitCode = parsed.MapResult(
+            return parsed.MapResult(
                 (Func<InitOptions, int>)Init,
                 (Func<SetPropertyOptions, int>)SetProperty,
                 (Func<GetPropertyOptions, int>)GetProperty,
-                (IEnumerable<Error> errors) => 
-                {                 
+                (IEnumerable<Error> errors) =>
+                {
                     Console.WriteLine("Invalid arguments.");
                     return -1;
                 }
             );
+
             
-
-        #if DEBUG   
-            stopwatch.Stop();
-            Console.WriteLine($"Completed, Elapsed time {stopwatch.Elapsed}");
-
-            if(Debugger.IsAttached)
-            {
-                Console.WriteLine("Press any key to exit...");
-                Console.ReadKey();
-            }
-        #endif
-
-            return exitCode;
         }
 
         static int Init(InitOptions opts)

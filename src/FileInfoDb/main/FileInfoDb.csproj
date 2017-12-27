@@ -2,15 +2,51 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>net461</TargetFramework>  
   </PropertyGroup>
 
+  <!-- Nuget package properties -->
+  <PropertyGroup>
+    <Authors>Andreas Gruenwald</Authors>
+    <Description>FileInfoDb Command Line</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="config.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+    
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.1.1-beta" />
+    <PackageReference Include="Grynwald.Utilities.Squirrel" Version="1.0.2" />
+    <PackageReference Include="Grynwald.Utilities.Squirrel.Build" Version="1.0.20" />
+    <PackageReference Include="NuGet.CommandLine" Version="4.4.1" />
+    <PackageReference Include="Squirrel.Windows" Version="1.7.8" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\FileInfoDb.Core\main\FileInfoDb.Core.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Cli\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="config.Debug.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
+  <Target Name="DetermineSetupInputFiles">
+    <ItemGroup>
+        <SetupInputFiles Include="$(OutputPath)*" />
+        <SetupInputFiles Remove="$(OutputPath)*.pdb" />
+    </ItemGroup>    
+  </Target>
   
 </Project>

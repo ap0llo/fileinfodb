@@ -24,7 +24,7 @@
 	  <AssemblyVersion>$(BaseVersion).$(BuildNumber)</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
       <!--for nuget package version, semantic versioning can be used -->
-    <PackageVersion>$(BaseVersion)-dev$(BuildNumber)</PackageVersion>   
+    <PackageVersion>$(BaseVersion)</PackageVersion>   
     <InformationalVersion>$(PackageVersion)</InformationalVersion> 	
 
   </PropertyGroup>
