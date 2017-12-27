@@ -17,56 +17,22 @@ using FileInfoDb.Core.Hashing.Cache;
 namespace FileInfoDb
 {
 
-    class Program
+    partial class Program
     {
-        static IHashProvider s_HashProvider;
-
-        static int Main(string[] args)
-        {            
-            LaunchDebugger(args);
-            
-            InstallerBuilder.CreateConsoleApplicationBuilder()       
-                .SaveResourceToFile(Assembly.GetExecutingAssembly(), "FileInfoDb.config.json", SpecialDirectory.ApplicationRootDirectory, Configuration.ConfigFileName, overwriteOnUpdate: false)               
-                .Build()
-                .HandleInstallationEvents();
-
-            using (new ExecutionTimeLogger())
-            using (var updater = new Updater(Configuration.Current.UpdateOptions))
-            {
-                updater.Start();
-                return Run(args);
-            }
-        }
-
-        [Conditional("DEBUG")]
-        private static void LaunchDebugger(string[] args)
-        {
-            if (args.Any(x => StringComparer.OrdinalIgnoreCase.Equals(x, "--debug")))
-            {
-                if (Debugger.IsAttached)
-                {
-                    Debugger.Break();
-                }
-                else
-                {
-                    Debugger.Launch();
-                }
-            }
-        }
-
-        static int Run(string[] args) 
+        IHashProvider m_HashProvider;
+        
+        public int Run(string[] args) 
         {
             // Setup
-            s_HashProvider = new SHA256HashProvider();
+            m_HashProvider = new SHA256HashProvider();
 
             var hashingOptions = Configuration.Current.HashingOptions;
             if(hashingOptions.EnableCache)
             {
                 var cacheDb = new CacheDatabase(hashingOptions.CachePath);
                 var cache = new DatabaseBackedHashedFileInfoCache(cacheDb);
-                s_HashProvider = new CachingHashProvider(cache, s_HashProvider);
+                m_HashProvider = new CachingHashProvider(cache, m_HashProvider);
             }
-
             
             // Run Command
             var parsed = Parser.Default.ParseArguments<InitArgs, SetPropertyArgs, GetPropertyArgs>(args);
@@ -80,20 +46,19 @@ namespace FileInfoDb
                     return -1;
                 }
             );
-
             
         }
 
-        static int Init(InitArgs opts)
+        int Init(InitArgs opts)
         {
             var db = GetDatabase(opts);
             db.Create();
             return 0;
         }
 
-        static int SetProperty(SetPropertyArgs opts)
+        int SetProperty(SetPropertyArgs opts)
         {
-            var hashedFile = s_HashProvider.GetFileHash(opts.FilePath);
+            var hashedFile = m_HashProvider.GetFileHash(opts.FilePath);
             var db = GetDatabase(opts);
             var propertyStorage = new DatabaseBackedPropertyStorage(db);
 
@@ -102,9 +67,9 @@ namespace FileInfoDb
             return 0;
         }
 
-        static int GetProperty(GetPropertyArgs opts)
+        int GetProperty(GetPropertyArgs opts)
         {
-            var hashedFile = s_HashProvider.GetFileHash(opts.FilePath);
+            var hashedFile = m_HashProvider.GetFileHash(opts.FilePath);
             var db = GetDatabase(opts);
             var propertyStorage = new DatabaseBackedPropertyStorage(db);
 
@@ -119,7 +84,7 @@ namespace FileInfoDb
         }
 
 
-        static PropertiesDatabase GetDatabase(ArgsBase opts) => 
+        PropertiesDatabase GetDatabase(ArgsBase opts) => 
             new MySqlPropertiesDatabase(NullLogger<MySqlPropertiesDatabase>.Instance, new Uri(opts.DatabaseUri));
     }
 }
