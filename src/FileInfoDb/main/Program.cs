@@ -4,10 +4,12 @@ using FileInfoDb.Config;
 using FileInfoDb.Core.FileProperties;
 using FileInfoDb.Core.Hashing;
 using FileInfoDb.Core.Hashing.Cache;
+using Grynwald.Utilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FileInfoDb
 {
@@ -94,6 +96,13 @@ namespace FileInfoDb
 
             m_Logger.LogInformation($"Loading properties for file {hashedFile.Hash}");
             var properties = propertyStorage.GetProperties(hashedFile.Hash);
+
+            if(!String.IsNullOrEmpty(args.Name))
+            {
+                m_Logger.LogInformation($"Filtering properties using wildcard pattern '{args.Name}'");
+                var wildcard = new Wildcard(args.Name);
+                properties = properties.Where(p => wildcard.IsMatch(p.Name));
+            }
 
             foreach(var property in properties)
             {

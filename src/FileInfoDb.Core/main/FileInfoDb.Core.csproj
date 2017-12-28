@@ -6,7 +6,7 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Grynwald.Utilities" Version="1.0.6" />
+    <PackageReference Include="Grynwald.Utilities" Version="1.1.9" />
     <PackageReference Include="Microsoft.Data.SQLite" Version="2.0.0" />
     <PackageReference Include="NodaTime" Version="2.2.3" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />  
