@@ -32,9 +32,10 @@ namespace FileInfoDb
             try
             {
                 return Parser.Default
-                    .ParseArguments<InitArgs, SetPropertyArgs, GetPropertyArgs>(args)
+                    .ParseArguments<InitArgs, ConfigureArgs, SetPropertyArgs, GetPropertyArgs>(args)
                     .MapResult(
                         (Func<InitArgs, int>)Init,
+                        (Func<ConfigureArgs, int>)Configure,
                         (Func<SetPropertyArgs, int>)SetProperty,
                         (Func<GetPropertyArgs, int>)GetProperty,
                         (IEnumerable<Error> errors) =>
@@ -50,39 +51,45 @@ namespace FileInfoDb
             }
         }
 
-        int Init(InitArgs opts)
+        int Init(InitArgs args)
         {
             m_Logger.LogInformation($"Running '{CommandNames.Init}' command");
 
-            var db = GetDatabase(opts);
+            var db = GetDatabase(args);
             db.Create();
 
             return 0;
         }
 
-        int SetProperty(SetPropertyArgs opts)
+        int Configure(ConfigureArgs args)
+        {
+            m_Configuration.SetDatabaseUri(args.DatabaseUri);
+            return 0;                   
+        }
+
+        int SetProperty(SetPropertyArgs args)
         {
             m_Logger.LogInformation($"Running '{CommandNames.SetProperty}' command");
 
             var hashProvider = GetHashProvider();
-            var hashedFile = hashProvider.GetFileHash(opts.FilePath);
-            var db = GetDatabase(opts);
+            var hashedFile = hashProvider.GetFileHash(args.FilePath);
+            var db = GetDatabase(args);
             var propertyStorage = new DatabaseBackedPropertyStorage(db);
 
-            var property = new Property(opts.Name, opts.Value);
+            var property = new Property(args.Name, args.Value);
             m_Logger.LogInformation($"Setting property '{property}' for file {hashedFile.Hash}");
             propertyStorage.SetProperty(hashedFile.Hash, property);
 
             return 0;
         }
 
-        int GetProperty(GetPropertyArgs opts)
+        int GetProperty(GetPropertyArgs args)
         {
             m_Logger.LogInformation($"Running '{CommandNames.GetProperty}' command");
 
             var hashProvider = GetHashProvider();
-            var hashedFile = hashProvider.GetFileHash(opts.FilePath);
-            var db = GetDatabase(opts);
+            var hashedFile = hashProvider.GetFileHash(args.FilePath);
+            var db = GetDatabase(args);
             var propertyStorage = new DatabaseBackedPropertyStorage(db);
 
             m_Logger.LogInformation($"Loading properties for file {hashedFile.Hash}");
@@ -96,13 +103,13 @@ namespace FileInfoDb
             return 0;
         }
 
-        PropertiesDatabase GetDatabase(DatabaseArgs opts)
+        PropertiesDatabase GetDatabase(DatabaseArgs args)
         {
             Uri uri;
-            if(!String.IsNullOrEmpty(opts.DatabaseUri))
+            if(!String.IsNullOrEmpty(args.DatabaseUri))
             {
                 m_Logger.LogInformation("Using database uri from commandline arguments");
-                uri = new Uri(opts.DatabaseUri);
+                uri = new Uri(args.DatabaseUri);
             }
             else if(!String.IsNullOrEmpty(m_Configuration.DatabaseOptions.Uri))
             {
@@ -124,7 +131,7 @@ namespace FileInfoDb
             // Setup
             IHashProvider provider = new SHA256HashProvider(m_LoggerFactory.CreateLogger<SHA256HashProvider>());
 
-            var hashingOptions = Configuration.Current.HashingOptions;
+            var hashingOptions = m_Configuration.HashingOptions;
             if (hashingOptions.EnableCache)
             {
                 m_Logger.LogInformation($"Using hashing cache at '{hashingOptions.CachePath}'");
@@ -138,3 +145,4 @@ namespace FileInfoDb
         }
     }
 }
+    

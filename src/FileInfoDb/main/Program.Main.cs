@@ -39,12 +39,14 @@ namespace FileInfoDb
             var loggerFactory = new LoggerFactory();
             if (verbose)
                 loggerFactory.AddConsole(LogLevel.Information);
-            
+
+            var configuration = Configuration.Load(loggerFactory);
+
             using (verbose ? (IDisposable) new ExecutionTimeLogger() : NullDisposable.Instance)
-            using (var updater = new Updater(Configuration.Current.UpdateOptions, loggerFactory.CreateLogger<Updater>()))
+            using (var updater = new Updater(configuration.UpdateOptions, loggerFactory.CreateLogger<Updater>()))
             {
                 updater.Start();
-                var program = new Program(loggerFactory.CreateLogger<Program>(), loggerFactory, Configuration.Current);
+                var program = new Program(loggerFactory.CreateLogger<Program>(), loggerFactory, configuration);
                 return program.Run(args);
             }
         }
