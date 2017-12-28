@@ -16,12 +16,11 @@
       if the build number has not yet been set
     -->
     <AppVeyor Condition="'$(AppVeyor)' == ''">false</AppVeyor>
-    <BaseVersion Condition=" '$(BaseVersion)' == ''">1.0.0</BaseVersion>
-    <BuildNumber Condition="$(AppVeyor) AND '$(BuildNumber)' == ''">$(APPVEYOR_BUILD_NUMBER)</BuildNumber>
-    <BuildNumber Condition=" '$(BuildNumber)' == ''">0</BuildNumber>
+    <BaseVersion>0.1.0</BaseVersion>
+    <BaseVersion Condition="$(AppVeyor)">$(APPVEYOR_BUILD_VERSION)</BaseVersion>
 
     <!-- Build version info -->    
-	  <AssemblyVersion>$(BaseVersion).$(BuildNumber)</AssemblyVersion>
+	  <AssemblyVersion>$(BaseVersion)</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
       <!--for nuget package version, semantic versioning can be used -->
     <PackageVersion>$(BaseVersion)</PackageVersion>   

@@ -1,0 +1,20 @@
+version: 0.1.{build}
+build_script:
+- cmd: .\build.bat
+test_script:
+- cmd: .\test.bat
+image: Visual Studio 2017
+services:
+  - mysql
+
+environment:
+  FILEINFODB_TEST_MYSQLURI: fileinfodb-mysql://root:Password12!@localhost:3306
+
+artifacts:
+  - path: .\Build\Release\Setup\RELEASES    
+  - path: .\Build\Release\Setup\Setup.exe
+  - path: .\Build\Release\Setup\*.nupkg
+
+skip_tags: true
+
+
