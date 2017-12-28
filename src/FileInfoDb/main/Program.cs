@@ -97,7 +97,15 @@ namespace FileInfoDb
 
             var property = new Property(args.Name, value);
             m_Logger.LogInformation($"Setting property '{property.Name}' for file {hashedFile.Hash}");
-            propertyStorage.SetProperty(hashedFile.Hash, property);
+            try
+            {
+                propertyStorage.SetProperty(hashedFile.Hash, property, args.Overwrite);
+            }
+            catch (PropertyAlreadyExistsException)
+            {
+                Console.Error.WriteLine($"Property '{property.Name}' has already been set for the file, use --overwrite to replace");
+                return -1;
+            }
 
             return 0;
         }

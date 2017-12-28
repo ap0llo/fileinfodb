@@ -16,5 +16,8 @@ namespace FileInfoDb.Cli
 
         [Option("value-from-file", Required = true, SetName = "ValueFromFile")]
         public string ValueFromFile { get; set; }
+
+        [Option("overwrite", Required =false, Default = false)]
+        public bool Overwrite { get; set; }
     }
 }

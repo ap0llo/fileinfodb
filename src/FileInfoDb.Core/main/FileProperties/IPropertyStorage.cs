@@ -9,6 +9,6 @@ namespace FileInfoDb.Core.FileProperties
 
         IEnumerable<Property> GetProperties(HashValue fileHash);
 
-        void SetProperty(HashValue fileHash, Property property);
+        void SetProperty(HashValue fileHash, Property property, bool overwrite);
     }
 }

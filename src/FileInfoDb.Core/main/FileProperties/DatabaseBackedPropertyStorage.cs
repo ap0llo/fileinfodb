@@ -5,6 +5,7 @@ using System.Text;
 using Dapper;
 using Grynwald.Utilities.Data;
 using FileInfoDb.Core.Hashing;
+using MySql.Data.MySqlClient;
 
 namespace FileInfoDb.Core.FileProperties
 {
@@ -58,7 +59,7 @@ namespace FileInfoDb.Core.FileProperties
             }
         }
 
-        public void SetProperty(HashValue fileHash, Property property)
+        public void SetProperty(HashValue fileHash, Property property, bool overwrite)
         {
             using (var connection = m_Database.OpenConnection())
             using (var transaction = connection.BeginTransaction())
@@ -91,20 +92,27 @@ namespace FileInfoDb.Core.FileProperties
                     }
                 );
 
-                connection.ExecuteNonQuery($@"
-                    REPLACE INTO {PropertiesTable.Name} 
+                try
+                {
+                    connection.ExecuteNonQuery($@"
+                    {(overwrite ? "REPLACE" : "INSERT")} INTO {PropertiesTable.Name} 
                     (
                         {PropertiesTable.Column.HashId}, 
                         {PropertiesTable.Column.Name}, 
                         {PropertiesTable.Column.Value}
                     )
                     VALUES (@hashId, @name, @value)",
-
                     ("hashId", hashId),
                     ("name", property.Name),
                     ("value", property.Value)
-                );
+                    );
 
+                }
+                catch (MySqlException ex) when (ex.Number == (int) MySqlErrorCode.DuplicateKeyEntry)
+                {
+                    transaction.Rollback();
+                    throw new PropertyAlreadyExistsException("Property already exists", ex);
+                }
                 transaction.Commit();
             }
         }
