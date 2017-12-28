@@ -9,6 +9,7 @@ namespace FileInfoDb.Cli
     static class CommandNames
     {
         public const string GetProperty = "get-property";
+        public const string GetPropertyName = "get-propertyname";
         public const string SetProperty = "set-property";
         public const string Init = "init";
         public const string Configure = "configure";

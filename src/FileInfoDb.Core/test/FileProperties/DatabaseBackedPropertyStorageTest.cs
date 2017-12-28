@@ -46,6 +46,31 @@ namespace FileInfoDb.Core.Test.FileProperties
         }
 
 
+
+        [Fact]
+        public void GetPropertyNames_returns_empty_enumerable_for_empty_database()
+        {
+            var instance = new DatabaseBackedPropertyStorage(Database);
+            Assert.Empty(instance.GetPropertyNames());
+        }
+
+        [Fact]
+        public void GetPropertyNames_returns_expected_names()
+        {
+            var instance = new DatabaseBackedPropertyStorage(Database);
+
+            instance.SetProperty(GetRandomHashValue(), new Property("name1", "Irrelevant"));
+            instance.SetProperty(GetRandomHashValue(), new Property("name2", "Irrelevant"));
+            instance.SetProperty(GetRandomHashValue(), new Property("Name1", "Irrelevant"));
+
+            var names = instance.GetPropertyNames().ToHashSet(StringComparer.OrdinalIgnoreCase);
+            Assert.Equal(2, names.Count());
+
+            var expectedNames = new[] { "name1", "name2" }.ToHashSet(StringComparer.OrdinalIgnoreCase);
+            names.ExceptWith(expectedNames);            
+            Assert.Empty(names);
+        }
+
         [Fact]
         public void GetProperties_is_empty_for_unknown_file()
         {

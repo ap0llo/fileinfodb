@@ -44,6 +44,20 @@ namespace FileInfoDb.Core.FileProperties
             }            
         }
 
+        public IEnumerable<string> GetPropertyNames()
+        {
+            using (var connection = m_Database.OpenConnection())
+            {
+                var properties = connection.Query<string>($@"
+                    SELECT DISTINCT
+                        {PropertiesTable.Column.Name}
+                    FROM  {PropertiesTable.Name};
+                    ");
+
+                return properties.ToList();
+            }
+        }
+
         public void SetProperty(HashValue fileHash, Property property)
         {
             using (var connection = m_Database.OpenConnection())

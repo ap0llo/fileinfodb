@@ -34,12 +34,13 @@ namespace FileInfoDb
             try
             {
                 return Parser.Default
-                    .ParseArguments<InitArgs, ConfigureArgs, SetPropertyArgs, GetPropertyArgs>(args)
+                    .ParseArguments<InitArgs, ConfigureArgs, SetPropertyArgs, GetPropertyArgs, GetPropertyNameArgs>(args)
                     .MapResult(
                         (Func<InitArgs, int>)Init,
                         (Func<ConfigureArgs, int>)Configure,
                         (Func<SetPropertyArgs, int>)SetProperty,
                         (Func<GetPropertyArgs, int>)GetProperty,
+                        (Func<GetPropertyNameArgs, int>)GetPropertyName,
                         (IEnumerable<Error> errors) =>
                         {
                             Console.Error.WriteLine("Invalid arguments.");
@@ -53,6 +54,7 @@ namespace FileInfoDb
             }
         }
 
+
         int Init(InitArgs args)
         {
             m_Logger.LogInformation($"Running '{CommandNames.Init}' command");
@@ -65,6 +67,8 @@ namespace FileInfoDb
 
         int Configure(ConfigureArgs args)
         {
+            m_Logger.LogInformation($"Running '{CommandNames.Configure}' command");
+
             m_Configuration.SetDatabaseUri(args.DatabaseUri);
             return 0;                   
         }
@@ -107,6 +111,21 @@ namespace FileInfoDb
             foreach(var property in properties)
             {
                 Console.WriteLine(property);
+            }
+
+            return 0;
+        }
+
+        int GetPropertyName(GetPropertyNameArgs args)
+        {
+            m_Logger.LogInformation($"Running '{CommandNames.GetPropertyName}' command");
+
+            var db = GetDatabase(args);
+            var propertyStorage = new DatabaseBackedPropertyStorage(db);
+            
+            foreach(var name in propertyStorage.GetPropertyNames())
+            {
+                Console.WriteLine(name);
             }
 
             return 0;
