@@ -11,7 +11,10 @@ namespace FileInfoDb.Cli
         [Option("name", Required = true)]
         public string Name { get; set; }
 
-        [Option("value", Required =true)]
+        [Option("value", Required = true, SetName ="Value")]
         public string Value { get; set; }
+
+        [Option("value-from-file", Required = true, SetName = "ValueFromFile")]
+        public string ValueFromFile { get; set; }
     }
 }

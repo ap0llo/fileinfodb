@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace FileInfoDb
@@ -34,7 +35,7 @@ namespace FileInfoDb
             try
             {
                 return Parser.Default
-                    .ParseArguments<InitArgs, ConfigureArgs, SetPropertyArgs, GetPropertyArgs, GetPropertyNameArgs>(args)
+                    .ParseArguments<InitArgs, ConfigureArgs, SetPropertyArgs, GetPropertyArgs, GetPropertyNameArgs>(args)                    
                     .MapResult(
                         (Func<InitArgs, int>)Init,
                         (Func<ConfigureArgs, int>)Configure,
@@ -82,8 +83,20 @@ namespace FileInfoDb
             var db = GetDatabase(args);
             var propertyStorage = new DatabaseBackedPropertyStorage(db);
 
-            var property = new Property(args.Name, args.Value);
-            m_Logger.LogInformation($"Setting property '{property}' for file {hashedFile.Hash}");
+            string value;
+            if(String.IsNullOrEmpty(args.Value))
+            {
+                m_Logger.LogInformation($"Using value from file '{args.ValueFromFile}'");
+                value = File.ReadAllText(args.ValueFromFile);
+            }
+            else
+            {
+                m_Logger.LogInformation("Using property value from commandline arguments");
+                value = args.Value;
+            }
+
+            var property = new Property(args.Name, value);
+            m_Logger.LogInformation($"Setting property '{property.Name}' for file {hashedFile.Hash}");
             propertyStorage.SetProperty(hashedFile.Hash, property);
 
             return 0;
