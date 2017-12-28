@@ -16,29 +16,39 @@ namespace FileInfoDb
     {
         readonly ILogger<Program> m_Logger;
         readonly LoggerFactory m_LoggerFactory;
+        readonly Configuration m_Configuration;
 
 
-        public Program(ILogger<Program> logger, LoggerFactory loggerFactory)
+        public Program(ILogger<Program> logger, LoggerFactory loggerFactory, Configuration configuration)
         {
             m_Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             m_LoggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
+            m_Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
 
-        public int Run(string[] args) =>
-            Parser.Default
-                .ParseArguments<InitArgs, SetPropertyArgs, GetPropertyArgs>(args)
-                .MapResult(
-                    (Func<InitArgs, int>)Init,
-                    (Func<SetPropertyArgs, int>)SetProperty,
-                    (Func<GetPropertyArgs, int>)GetProperty,
-                    (IEnumerable<Error> errors) =>
-                    {
-                        Console.WriteLine("Invalid arguments.");
-                        return -1;
-                    }
-                );
-
+        public int Run(string[] args)
+        {
+            try
+            {
+                return Parser.Default
+                    .ParseArguments<InitArgs, SetPropertyArgs, GetPropertyArgs>(args)
+                    .MapResult(
+                        (Func<InitArgs, int>)Init,
+                        (Func<SetPropertyArgs, int>)SetProperty,
+                        (Func<GetPropertyArgs, int>)GetProperty,
+                        (IEnumerable<Error> errors) =>
+                        {
+                            Console.Error.WriteLine("Invalid arguments.");
+                            return -1;
+                        });
+            }
+            catch (MissingConfigurationException ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+                return -1;
+            }
+        }
 
         int Init(InitArgs opts)
         {
@@ -88,7 +98,23 @@ namespace FileInfoDb
 
         PropertiesDatabase GetDatabase(DatabaseArgs opts)
         {
-            var uri = new Uri(opts.DatabaseUri);
+            Uri uri;
+            if(!String.IsNullOrEmpty(opts.DatabaseUri))
+            {
+                m_Logger.LogInformation("Using database uri from commandline arguments");
+                uri = new Uri(opts.DatabaseUri);
+            }
+            else if(!String.IsNullOrEmpty(m_Configuration.DatabaseOptions.Uri))
+            {
+                m_Logger.LogInformation("Using database uri from configuration");
+                uri = new Uri(m_Configuration.DatabaseOptions.Uri);
+            }
+            else
+            {
+                m_Logger.LogInformation("Could not determine database uri");
+                throw new MissingConfigurationException("No database uri is configured and no value was specified as commandline parameter");
+            }
+            
             m_Logger.LogInformation($"Using database '{uri.WithoutCredentials()}'");
             return new MySqlPropertiesDatabase(NullLogger<MySqlPropertiesDatabase>.Instance, uri);
         }

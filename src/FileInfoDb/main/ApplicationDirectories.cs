@@ -6,7 +6,7 @@ namespace FileInfoDb
 {
     class ApplicationDirectories
     {
-        public static string LocalAppData => 
+        public static string InstallationDirectory => 
             ApplicationInfo.GetDirectoryPath(SpecialDirectory.ApplicationRootDirectory);
 
         public static string RoamingAppData =>
