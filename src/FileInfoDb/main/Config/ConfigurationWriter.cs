@@ -42,6 +42,7 @@ namespace FileInfoDb.Config
             else
             {
                 root = new JObject();
+                Directory.CreateDirectory(Path.GetDirectoryName(m_Path));
             }
 
 
