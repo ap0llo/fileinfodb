@@ -1,7 +1,8 @@
-﻿using Grynwald.Utilities.Squirrel.Updating;
+﻿using System;
+using System.IO;
+using Grynwald.Utilities.Squirrel.Updating;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.IO;
 
 namespace FileInfoDb.Config
 {
@@ -12,6 +13,8 @@ namespace FileInfoDb.Config
         const string s_DatabaseOptionsSectionName = "Database";
 
         readonly LoggerFactory m_LoggerFactory;
+        readonly ILogger m_Logger;
+        DatabaseOptions m_DatabaseOptions;
 
 
         public const string ConfigFileName = "config.json";
@@ -21,28 +24,33 @@ namespace FileInfoDb.Config
         public UpdateOptions UpdateOptions { get; }
 
         public HashingOptions HashingOptions { get; }
-        
-        public DatabaseOptions DatabaseOptions { get; }
 
-
-        private Configuration(LoggerFactory loggerFactory, UpdateOptions updateOptions, HashingOptions hashingOptions, DatabaseOptions databaseOptions)
+        public DatabaseOptions DatabaseOptions
         {
-            m_LoggerFactory = loggerFactory ?? throw new System.ArgumentNullException(nameof(loggerFactory));
-            UpdateOptions = updateOptions ?? throw new System.ArgumentNullException(nameof(updateOptions));
-            HashingOptions = hashingOptions ?? throw new System.ArgumentNullException(nameof(hashingOptions));
-            DatabaseOptions = databaseOptions ?? throw new System.ArgumentNullException(nameof(databaseOptions));
+            get => m_DatabaseOptions;
+            set
+            {
+                var writer = new ConfigurationWriter(
+                    m_LoggerFactory.CreateLogger<ConfigurationWriter>(),
+                    Path.Combine(ApplicationDirectories.RoamingAppData, ConfigFileName));
+
+                m_Logger.LogInformation("Saving databse options");
+                writer.SetValue($"{s_DatabaseOptionsSectionName}:{nameof(DatabaseOptions.Uri)}", value.Uri);
+                writer.SetValue($"{s_DatabaseOptionsSectionName}:{nameof(DatabaseOptions.CredentialSource)}", value.CredentialSource.ToString());
+
+                m_DatabaseOptions = value;
+            }
         }
 
 
-        public void SetDatabaseUri(string value)
+        private Configuration(LoggerFactory loggerFactory, ILogger logger, UpdateOptions updateOptions, HashingOptions hashingOptions, DatabaseOptions databaseOptions)
         {
-            var writer = new ConfigurationWriter(
-                m_LoggerFactory.CreateLogger<ConfigurationWriter>(),
-                Path.Combine(ApplicationDirectories.RoamingAppData, ConfigFileName));
-
-            writer.SetValue($"{s_DatabaseOptionsSectionName}:{nameof(DatabaseOptions.Uri)}", value);
+            m_LoggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
+            m_Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            UpdateOptions = updateOptions ?? throw new ArgumentNullException(nameof(updateOptions));
+            HashingOptions = hashingOptions ?? throw new ArgumentNullException(nameof(hashingOptions));
+            m_DatabaseOptions = databaseOptions ?? throw new ArgumentNullException(nameof(databaseOptions));
         }
-
 
         
         public static Configuration Load(LoggerFactory loggerFactory)
@@ -67,7 +75,7 @@ namespace FileInfoDb.Config
 
             var databaseOptions = appDataRoot.GetSection(s_DatabaseOptionsSectionName)?.Get<DatabaseOptions>() ?? new DatabaseOptions();
 
-            return new Configuration(loggerFactory, updateOptions, hashingOptions, databaseOptions);
+            return new Configuration(loggerFactory, logger, updateOptions, hashingOptions, databaseOptions);
         }
     }
 }

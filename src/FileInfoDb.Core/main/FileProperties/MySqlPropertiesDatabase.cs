@@ -9,13 +9,13 @@ namespace FileInfoDb.Core.FileProperties
     public class MySqlPropertiesDatabase : PropertiesDatabase
     {        
         
-        readonly ILogger<MySqlPropertiesDatabase> m_Logger;
+        readonly ILogger m_Logger;
         readonly Uri m_DatabaseUri;
         readonly string m_ConnectionString;
         
         
 
-        public MySqlPropertiesDatabase(ILogger<MySqlPropertiesDatabase> logger, Uri databaseUri) : base(logger)
+        public MySqlPropertiesDatabase(ILogger logger, Uri databaseUri) : base(logger)
         {
             m_DatabaseUri = databaseUri ?? throw new ArgumentNullException(nameof(databaseUri));
             m_Logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -46,10 +46,18 @@ namespace FileInfoDb.Core.FileProperties
 
         protected override IDbConnection DoOpenConnection()
         {            
-            var connection = new MySqlConnection(m_ConnectionString);            
-            connection.Open();
+            try
+            {
+                var connection = new MySqlConnection(m_ConnectionString);
+                connection.Open();
+                return connection;
+            }
+            catch (MySqlException ex) when (ex.Number == (int) MySqlErrorCode.AccessDenied)
+            {                
+                m_Logger.LogError(ex, $"Encountered AccessDenied error");
+                throw new DatabaseAccessDeniedException("Access to the database was denied", ex);
+            }
 
-            return connection;
         }
         
         protected override void DoCreateDatabase()

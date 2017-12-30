@@ -15,15 +15,10 @@ namespace FileInfoDb.Core.FileProperties
             if (uri == null)
                 throw new ArgumentNullException(nameof(uri));
 
-            if(!uri.IsSyncToolMySqlUri())
-                throw new InvalidDatabaseUriException(uri, $"Unsupported scheme '{uri.Scheme}'");
+            if(!uri.IsValidFileInfoDbMySqlUri(out var error))
+                throw new InvalidDatabaseUriException(uri, error);
 
-            if (String.IsNullOrEmpty(uri.Host))
-                throw new InvalidDatabaseUriException(uri, "Host must not be empty");
-
-            if(uri.Segments.Length > 2)
-                throw new InvalidDatabaseUriException(uri, "Uri must not contain multiple segments");
-
+            
             var (user, password) = GetUserInfo(uri);
 
             var connectionStringBuilder = new MySqlConnectionStringBuilder()            
@@ -40,7 +35,34 @@ namespace FileInfoDb.Core.FileProperties
             return connectionStringBuilder;
         }
 
-        public static bool IsSyncToolMySqlUri(this Uri uri) => uri.Scheme == s_Scheme;
+        public static bool IsValidFileInfoDbMySqlUri(this Uri uri) => IsValidFileInfoDbMySqlUri(uri, out var _);
+
+        public static bool IsValidFileInfoDbMySqlUri(this Uri uri, out string error)
+        {
+            if (uri == null)
+                throw new ArgumentNullException(nameof(uri));
+
+            if (uri.Scheme != s_Scheme)
+            {
+                error = $"Unsupported scheme '{uri.Scheme}'";
+                return false;
+            }
+
+            if (String.IsNullOrEmpty(uri.Host))
+            {
+                error = "Host must not be empty";
+                return false;
+            }
+
+            if (uri.Segments.Length > 2)
+            {
+                error = "Uri must not contain multiple segments";
+                return false;
+            }
+
+            error = default;
+            return true;
+        }
 
 
         static (string user, string password) GetUserInfo(Uri uri)

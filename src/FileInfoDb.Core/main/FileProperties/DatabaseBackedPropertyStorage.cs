@@ -95,19 +95,20 @@ namespace FileInfoDb.Core.FileProperties
                 try
                 {
                     connection.ExecuteNonQuery($@"
-                    {(overwrite ? "REPLACE" : "INSERT")} INTO {PropertiesTable.Name} 
-                    (
-                        {PropertiesTable.Column.HashId}, 
-                        {PropertiesTable.Column.Name}, 
-                        {PropertiesTable.Column.Value}
-                    )
-                    VALUES (@hashId, @name, @value)",
-                    ("hashId", hashId),
-                    ("name", property.Name),
-                    ("value", property.Value)
+                        {(overwrite ? "REPLACE" : "INSERT")} INTO {PropertiesTable.Name} 
+                        (
+                            {PropertiesTable.Column.HashId}, 
+                            {PropertiesTable.Column.Name}, 
+                            {PropertiesTable.Column.Value}
+                        )
+                        VALUES (@hashId, @name, @value)",
+                        ("hashId", hashId),
+                        ("name", property.Name),
+                        ("value", property.Value)
                     );
 
                 }
+                //TODO: The MySQL specific exception should not be handled here, MySQL is a implementation detail of 'PropertiesDatabase'
                 catch (MySqlException ex) when (ex.Number == (int) MySqlErrorCode.DuplicateKeyEntry)
                 {
                     transaction.Rollback();

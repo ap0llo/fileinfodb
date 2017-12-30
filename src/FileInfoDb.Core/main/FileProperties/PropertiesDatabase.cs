@@ -1,3 +1,4 @@
+using System;
 using System.Data;
 using Dapper;
 using Microsoft.Extensions.Logging;
@@ -10,13 +11,13 @@ namespace FileInfoDb.Core.FileProperties
 
         static readonly object s_Lock = new object();
         bool m_FirstAccess = true;
-        readonly ILogger<PropertiesDatabase> m_Logger;
+        readonly ILogger m_Logger;
 
         
 
-        protected PropertiesDatabase(ILogger<PropertiesDatabase> logger)
+        protected PropertiesDatabase(ILogger logger)
         {
-            m_Logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
+            m_Logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
 

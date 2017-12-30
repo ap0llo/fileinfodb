@@ -1,16 +1,18 @@
-﻿using CommandLine;
-using FileInfoDb.Cli;
-using FileInfoDb.Config;
-using FileInfoDb.Core.FileProperties;
-using FileInfoDb.Core.Hashing;
-using FileInfoDb.Core.Hashing.Cache;
-using Grynwald.Utilities;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CommandLine;
+using Grynwald.Utilities;
+using Grynwald.Utilities.Squirrel;
+using Meziantou.Framework.Win32;
+using Microsoft.Extensions.Logging;
+using FileInfoDb.Cli;
+using FileInfoDb.Config;
+using FileInfoDb.Core;
+using FileInfoDb.Core.FileProperties;
+using FileInfoDb.Core.Hashing;
+using FileInfoDb.Core.Hashing.Cache;
 
 namespace FileInfoDb
 {
@@ -47,8 +49,8 @@ namespace FileInfoDb
                             Console.Error.WriteLine("Invalid arguments.");
                             return -1;
                         });
-            }
-            catch (MissingConfigurationException ex)
+            }            
+            catch (Exception ex) when(ex is ExecutionErrorException || ex is DatabaseAccessDeniedException)
             {
                 Console.Error.WriteLine(ex.Message);
                 return -1;
@@ -70,7 +72,52 @@ namespace FileInfoDb
         {
             m_Logger.LogInformation($"Running '{CommandNames.Configure}' command");
 
-            m_Configuration.SetDatabaseUri(args.DatabaseUri);
+
+            if (!Uri.IsWellFormedUriString(args.DatabaseUri, UriKind.Absolute))
+            {
+                Console.Error.WriteLine("Specified value is not a valid URI");
+                return -1;
+            }
+
+            var uri = new Uri(args.DatabaseUri);
+            if (!uri.IsValidFileInfoDbMySqlUri(out var error))
+            {
+                Console.Error.WriteLine(error);
+                return -1;
+            }
+                    
+            // check if uri contains a password
+            // - if the uri contains a password, username and password are stored using the Windows Credential Manager,
+            //   the uri without username or password is stored in config            
+            // - if the uri contains no password, the uri (with a optional username) is stored in config
+            //   (Windows Credential Manager (or the wrapper library) cannot store "null"-Passwords)
+            if (uri.HasPassword())
+            {
+                m_Logger.LogInformation("Saving username and password to Windows Credential Manager");
+                CredentialManager.WriteCredential(ApplicationInfo.ApplicationName, uri.GetUserName(), uri.GetPassword(), CredentialPersistence.LocalMachine);
+
+                m_Configuration.DatabaseOptions = new DatabaseOptions()
+                {
+                    Uri = uri.WithoutCredentials().ToString(),
+                    CredentialSource = CredentialSource.WindowsCredentialManager
+                };
+            }
+            else
+            {
+                // delete credential from Credential Manager if it exists
+                if (CredentialManager.EnumerateCrendentials().Any(c => c.ApplicationName.Equals(ApplicationInfo.ApplicationName)))
+                {
+                    m_Logger.LogInformation("Uri does not contain a password, deleting corresponding entry from Windows Credential Manager");
+                    CredentialManager.DeleteCredential(ApplicationInfo.ApplicationName);
+                }
+                
+                m_Configuration.DatabaseOptions = new DatabaseOptions()
+                {
+                    Uri = uri.ToString(),
+                    CredentialSource = CredentialSource.None
+                };
+            }
+
             return 0;                   
         }
 
@@ -164,15 +211,28 @@ namespace FileInfoDb
             {
                 m_Logger.LogInformation("Using database uri from configuration");
                 uri = new Uri(m_Configuration.DatabaseOptions.Uri);
+
+                
+                if (m_Configuration.DatabaseOptions.CredentialSource == CredentialSource.WindowsCredentialManager)
+                {
+                    m_Logger.LogInformation("Loading credentials from Windows Credentials manager");
+                    var cred = CredentialManager.ReadCredential(ApplicationInfo.ApplicationName);
+                    if (cred == null)
+                    {
+                        throw new ExecutionErrorException($"Failed to load credentials for database connection. Use the '{CommandNames.Configure}' command to set up database connection");
+                    }
+
+                    uri = uri.WithCredentials(cred.UserName, cred.Password);
+                }
             }
             else
             {
                 m_Logger.LogInformation("Could not determine database uri");
-                throw new MissingConfigurationException("No database uri is configured and no value was specified as commandline parameter");
+                throw new ExecutionErrorException("No database uri is configured and no value was specified as commandline parameter");
             }
             
             m_Logger.LogInformation($"Using database '{uri.WithoutCredentials()}'");
-            return new MySqlPropertiesDatabase(NullLogger<MySqlPropertiesDatabase>.Instance, uri);
+            return new MySqlPropertiesDatabase(m_LoggerFactory.CreateLogger<MySqlPropertiesDatabase>(), uri);
         }
 
         IHashProvider GetHashProvider()

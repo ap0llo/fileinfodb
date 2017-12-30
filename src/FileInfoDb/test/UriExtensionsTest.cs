@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace FileInfoDb.Test
@@ -24,6 +22,19 @@ namespace FileInfoDb.Test
             Assert.Equal(uri.Host, uriWithoutCredentials.Host);
             Assert.Equal(uri.PathAndQuery, uriWithoutCredentials.PathAndQuery);
             Assert.Equal(uri.Port, uriWithoutCredentials.Port);            
+        }
+
+
+        [Theory]
+        [InlineData("http://example.com/path", false)]
+        [InlineData("http://example.com/path?query=foo", false)]
+        [InlineData("http://example.com:1234/path", false)]
+        [InlineData("http://user@example.com:1234/path", false)]
+        [InlineData("http://user:pw@example.com:1234/path", true)]
+        public void HasPassword_returns_expected_value(string uriString, bool hasPassword)
+        {
+            var uri = new Uri(uriString);
+            Assert.Equal(hasPassword, uri.HasPassword());
         }
     }
 }

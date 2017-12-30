@@ -1,20 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileInfoDb
 {
     static class UriExtensions
     {
-        public static Uri WithoutCredentials(this Uri uri)
+        public static bool HasPassword(this Uri uri)
         {
             var uriBuilder = new UriBuilder(uri);
-            uriBuilder.UserName = null;
-            uriBuilder.Password = null;
+            return !String.IsNullOrEmpty(uriBuilder.Password);
+        }        
+   
+        public static Uri WithCredentials(this Uri uri, string userName, string password)
+        {
+            var uriBuilder = new UriBuilder(uri)
+            {
+                UserName = userName,
+                Password = password
+            };
             return uriBuilder.Uri;
         }
 
+        public static Uri WithoutCredentials(this Uri uri) => uri.WithCredentials(null, null);
+
+        public static string GetUserName(this Uri uri) => new UriBuilder(uri).UserName;
+
+        public static string GetPassword(this Uri uri) => new UriBuilder(uri).Password;
     }
 }
