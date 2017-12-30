@@ -46,8 +46,9 @@
   
   <Target Name="DetermineSetupInputFiles">
     <ItemGroup>
-        <SetupInputFiles Include="$(OutputPath)*" />
-        <SetupInputFiles Remove="$(OutputPath)*.pdb" />
+        <SetupInputFiles Include="$(OutputPath)*.exe" />
+        <SetupInputFiles Include="$(OutputPath)*.exe.config" />
+        <SetupInputFiles Include="$(OutputPath)*.dll" />        
     </ItemGroup>    
   </Target>
   
