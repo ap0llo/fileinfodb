@@ -35,7 +35,14 @@ namespace FileInfoDb
         {
             try
             {
-                return Parser.Default
+                var parser = new Parser(opts =>
+                {
+                    opts.CaseInsensitiveEnumValues = true;
+                    opts.CaseSensitive = false;
+                    opts.HelpWriter = Console.Out;
+                });
+
+                return parser
                     .ParseArguments<InitArgs, ConfigureArgs, SetPropertyArgs, GetPropertyArgs, GetPropertyNameArgs>(args)                    
                     .MapResult(
                         (Func<InitArgs, int>)Init,
