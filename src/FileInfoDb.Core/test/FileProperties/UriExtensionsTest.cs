@@ -35,22 +35,15 @@ namespace FileInfoDb.Core.Test.FileProperties
         }
 
         [Theory]
-        [InlineData("synctool-mysql://host:123/databasename/anothername")]
+        [InlineData("fileinfodb-mysql://host:123/databasename/anothername")]
         public void ToMySqlConnectionStringBuilder_throws_InvalidDatabaseUriException_if_path_contains_multiple_segments(string uri)
         {
             Assert.Throws<InvalidDatabaseUriException>(() => new Uri(uri).ToMySqlConnectionStringBuilder());
         }
 
         [Theory]
-        [InlineData("synctool-mysql:///databasename")]
+        [InlineData("fileinfodb-mysql:///databasename")]
         public void ToMySqlConnectionStringBuilder_throws_InvalidDatabaseUriException_if_host_is_null(string uri)
-        {
-            Assert.Throws<InvalidDatabaseUriException>(() => new Uri(uri).ToMySqlConnectionStringBuilder());
-        }
-
-        [Theory]
-        [InlineData("synctool-mysql://user:password:more@host/databasename")]
-        public void ToMySqlConnectionStringBuilder_throws_InvalidDatabaseUriException_UserInfo_is_in_invalid_format(string uri)
         {
             Assert.Throws<InvalidDatabaseUriException>(() => new Uri(uri).ToMySqlConnectionStringBuilder());
         }

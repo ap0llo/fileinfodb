@@ -1,15 +1,15 @@
-﻿using Grynwald.Utilities.Data;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Text;
+﻿using System.Data;
+using Grynwald.Utilities.Data;
 
 namespace FileInfoDb.Core.FileProperties
 {
+    /// <summary>
+    /// Helper class that defines the schema for the database table holding the properties associated with files
+    /// </summary>
     static class PropertiesTable
     {
-
         public const string Name = "Properties";
+
 
         public enum Column
         {
@@ -33,6 +33,5 @@ namespace FileInfoDb.Core.FileProperties
                 );
             ");
         }
-
     }
 }

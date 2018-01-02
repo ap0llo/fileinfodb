@@ -1,12 +1,10 @@
-﻿using Grynwald.Utilities.Data;
+﻿using System;
+using System.Data;
+using System.IO;
+using Grynwald.Utilities.Data;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Text;
 
 namespace FileInfoDb.Core.Hashing.Cache
 {
@@ -15,9 +13,9 @@ namespace FileInfoDb.Core.Hashing.Cache
     /// </summary>
     public sealed class CacheDatabase
     {
+        static readonly object s_Lock = new object();
         readonly string m_ConnectionString;
         readonly ILogger<CacheDatabase> m_Logger;
-        static readonly object s_Lock = new object();
         bool m_FirstAccess = true;
 
 
@@ -56,7 +54,6 @@ namespace FileInfoDb.Core.Hashing.Cache
             
             return DoOpenConnection();
         }
-
 
         
         IDbConnection DoOpenConnection()

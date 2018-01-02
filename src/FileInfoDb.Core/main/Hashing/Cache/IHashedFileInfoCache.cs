@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NodaTime;
-
-namespace FileInfoDb.Core.Hashing.Cache
+﻿namespace FileInfoDb.Core.Hashing.Cache
 {
     /// <summary>
     /// Interface that provides access to a cache of file-hashes

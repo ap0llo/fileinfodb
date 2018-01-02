@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FileInfoDb.Cli
+﻿namespace FileInfoDb.Cli
 {
     static class CommandNames
     {
-        public const string GetProperty = "get-property";
-        public const string GetPropertyName = "get-propertyname";
-        public const string SetProperty = "set-property";
-        public const string Init = "init";
-        public const string Configure = "configure";
+        public const string GetProperty = "Get-Property";
+        public const string GetPropertyName = "Get-PropertyName";
+        public const string SetProperty = "Set-Property";
+        public const string Init = "Init";
+        public const string Configure = "Configure";
     }
 }

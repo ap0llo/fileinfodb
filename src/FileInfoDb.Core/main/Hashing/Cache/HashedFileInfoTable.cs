@@ -10,6 +10,7 @@ namespace FileInfoDb.Core.Hashing.Cache
     {
         public const string Name = "HashedFileInfo";        
 
+
         public enum Column
         {
             Path,
@@ -19,6 +20,7 @@ namespace FileInfoDb.Core.Hashing.Cache
             Hash
         }        
         
+
         public static void Create(IDbConnection connection)
         {
             connection.ExecuteNonQuery($@"

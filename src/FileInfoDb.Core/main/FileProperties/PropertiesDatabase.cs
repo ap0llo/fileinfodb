@@ -9,12 +9,12 @@ namespace FileInfoDb.Core.FileProperties
     {
         public const int SchemaVersion = 1;
 
+
         static readonly object s_Lock = new object();
         bool m_FirstAccess = true;
         readonly ILogger m_Logger;
 
         
-
         protected PropertiesDatabase(ILogger logger)
         {
             m_Logger = logger ?? throw new ArgumentNullException(nameof(logger));

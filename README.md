@@ -7,6 +7,14 @@ are stored in a MySQL based database.
 Files are not identified by name but using a (SHA256) hash value of the
 file's content.
 
+
+Build Status
+------------
+|**master**|**develop**|
+|:--:|:--:|
+|[![Build status](https://ci.appveyor.com/api/projects/status/boqw1m7byb96n6xf/branch/master?svg=true)](https://ci.appveyor.com/project/ap0llo/compare-and-copy/branch/master)|[![Build status](https://ci.appveyor.com/api/projects/status/boqw1m7byb96n6xf/branch/develop?svg=true)](https://ci.appveyor.com/project/ap0llo/compare-and-copy/branch/develop)|
+
+
 Installation
 ------------
 FileInfoDb is installed and updated using 
@@ -122,14 +130,6 @@ if neither last wrtie time nor the file's size differ from the value in the
 database, use the cached value. 
 
 To clear the cache, simply delete `hashing.cache.db`.
-
-
-Build Status
-------------
-|**master**|**develop**|
-|:--:|:--:|
-|[![Build status](https://ci.appveyor.com/api/projects/status/boqw1m7byb96n6xf/branch/master?svg=true)](https://ci.appveyor.com/project/ap0llo/compare-and-copy/branch/master)|[![Build status](https://ci.appveyor.com/api/projects/status/boqw1m7byb96n6xf/branch/develop?svg=true)](https://ci.appveyor.com/project/ap0llo/compare-and-copy/branch/develop)|
-
 
 
 

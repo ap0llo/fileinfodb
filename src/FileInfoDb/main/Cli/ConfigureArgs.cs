@@ -1,17 +1,11 @@
 ﻿using CommandLine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileInfoDb.Cli
 {
-    [Verb(CommandNames.Configure)]
+    [Verb(CommandNames.Configure, HelpText = "Configure default database uri")]
     class ConfigureArgs : BaseArgs
     {
-        [Option("uri", Required = true)]
+        [Option("uri", Required = true, HelpText ="The default database uri to save")]
         public string DatabaseUri { get; set; }
-
     }
 }

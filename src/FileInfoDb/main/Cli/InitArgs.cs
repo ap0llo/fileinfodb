@@ -1,11 +1,8 @@
 ﻿using CommandLine;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FileInfoDb.Cli
 {
-    [Verb(CommandNames.Init)]
+    [Verb(CommandNames.Init, HelpText = "Initializes a new database and creates the required database tables")]
     class InitArgs : DatabaseArgs
     {
     }

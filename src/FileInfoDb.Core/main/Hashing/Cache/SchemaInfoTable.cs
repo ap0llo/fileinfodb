@@ -13,11 +13,13 @@ namespace FileInfoDb.Core.Hashing.Cache
     {
         public const string Name = "SchemaInfo";        
 
+
         public enum Column
         {
             Name,
             Version            
         }        
+
         
         public static void Create(IDbConnection connection)
         {
