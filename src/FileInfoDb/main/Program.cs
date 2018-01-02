@@ -52,8 +52,15 @@ namespace FileInfoDb
                         (Func<GetPropertyNameArgs, int>)GetPropertyName,
                         (IEnumerable<Error> errors) =>
                         {
-                            Console.Error.WriteLine("Invalid arguments.");
-                            return -1;
+                            if (errors.All(e => e is HelpRequestedError || e is HelpVerbRequestedError || e is VersionRequestedError))
+                            {
+                                return 0;
+                            }
+                            else
+                            {
+                                Console.Error.WriteLine("Invalid arguments");
+                                return -1;
+                            }
                         });
             }            
             catch (Exception ex) when (ex is ExecutionErrorException || ex is DatabaseAccessDeniedException)
