@@ -1,6 +1,6 @@
 FileInfoDb
 ==========
-FileInfoDb is a tool to store (arbitraty) meta-information for files.
+FileInfoDb is a tool to store (arbitrary) meta-information for files.
 
 The meta data is modeled as "properties", simple string key-value pairs which
 are stored in a MySQL based database. 
@@ -15,7 +15,7 @@ Usage
 To configure the MySQL database to store properties in, run the `configure` 
 command and specify the database uri with a ``fileinfodb-mysql`` scheme.
 If the database server requires a username and password, provide this as 
-part of the url, too.
+part of the uri, too.
 
 ```batch
 fileinfodb configure --uri fileinfodb-mysql://USER:PASSWORD@server/DATABASENAME
@@ -26,13 +26,13 @@ fileinfodb configure --uri fileinfodb-mysql://USER:PASSWORD@server/DATABASENAME
 
 The configure command will save the uri in ``%APPDATA%\FileInfoDb\config.json``.
 
-Configuring the uri using the `configure` command is optional. Alternatively
+Configuring the uri using the `configure` command is optional. Alternatively,
 you can pass the uri to use to each of the commands using the ``--uri`
 commandline argument.
 
 
 ### Creating database and schema: `init`
-Before you can use the  database, the database and schema have to be created.
+Before you can use the  database, the database and schema must be created.
 This is achieved using the `init` command. You only need to run this command
 once for a database.
 
@@ -53,7 +53,7 @@ fileinfodb set-property --file FILEPATH --name "property1" --value "test"
 ```
 
 This will add a property named "property1" with a value of test. By default,
-FileInfoDb will not overwrite the exisitng value if a property with the 
+FileInfoDb will not overwrite the existing value if a property with the 
 specified name already exists for the file and will display a warning instead.
 To replace the existing value, use the `--overwrite` switch.
 
@@ -61,8 +61,8 @@ Instead of `--value` you can also use `--value-from-file` and specify the path
 to a file containing the property value. In this case, the file contents will
 be used as property value.
 
-**Note: The hash for the file is not computed every time a property is set,
-        for details, see [File Hashing](#file-hashing). **
+*Note: The hash for the file is not computed every time a property is set,
+       for details, see [File Hashing](#file-hashing).*
 
 
 ### Retrieving properties: `get-property`
@@ -84,12 +84,12 @@ fileinfodb get-property --file FILEPARH --name "property1"
 fileinfodb get-property --file FILEPARH --name "property*"
 ```
 
-**Note: The hash for the file is not computed every time a property is set,
-        for details, see [File Hashing](#file-hashing). **
+*Note: The hash for the file is not computed every time a property is set,
+       for details, see [File Hashing](#file-hashing).*
 
 
 ### List existing properties: `get-propertyname`
-Using the `get-propertyname` command, you can list the names of all properites
+Using the `get-propertyname` command, you can list the names of all properties
 present in the database (regardless which files they are associated with)
 
 ```batch
