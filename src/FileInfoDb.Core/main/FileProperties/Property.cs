@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FileInfoDb.Core.FileProperties
 {
     public sealed class Property : IEquatable<Property>
     {
-
         public string Name { get; }
 
         public string Value { get; }

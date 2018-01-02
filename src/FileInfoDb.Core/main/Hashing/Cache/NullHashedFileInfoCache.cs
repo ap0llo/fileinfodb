@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NodaTime;
-
-namespace FileInfoDb.Core.Hashing.Cache
+﻿namespace FileInfoDb.Core.Hashing.Cache
 {
     /// <summary>
-    /// Dummy implementtion of <see cref="IHashedFileInfoCache"/>
+    /// Dummy implementation of <see cref="IHashedFileInfoCache"/>
     /// </summary>
     public class NullHashedFileInfoCache : IHashedFileInfoCache
     {

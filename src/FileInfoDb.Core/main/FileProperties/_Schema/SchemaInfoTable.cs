@@ -1,5 +1,5 @@
-using Grynwald.Utilities.Data;
 using System.Data;
+using Grynwald.Utilities.Data;
 
 namespace FileInfoDb.Core.FileProperties
 {
@@ -13,12 +13,14 @@ namespace FileInfoDb.Core.FileProperties
     {
         public const string Name = "SchemaInfo";        
 
+
         public enum Column
         {
             Name,
             Version            
         }        
         
+
         public static void Create(IDbConnection connection)
         {
             // table is supposed to only have a single row

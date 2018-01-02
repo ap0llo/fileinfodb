@@ -8,13 +8,11 @@ namespace FileInfoDb.Core.FileProperties
 {
     public class MySqlPropertiesDatabase : PropertiesDatabase
     {        
-        
         readonly ILogger m_Logger;
         readonly Uri m_DatabaseUri;
         readonly string m_ConnectionString;
         
         
-
         public MySqlPropertiesDatabase(ILogger logger, Uri databaseUri) : base(logger)
         {
             m_DatabaseUri = databaseUri ?? throw new ArgumentNullException(nameof(databaseUri));

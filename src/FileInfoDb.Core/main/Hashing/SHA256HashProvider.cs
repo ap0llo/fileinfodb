@@ -1,11 +1,13 @@
-﻿using Microsoft.Extensions.Logging;
-using NodaTime.Extensions;
-using System;
+﻿using System;
 using System.IO;
 using System.Security.Cryptography;
+using Microsoft.Extensions.Logging;
 
 namespace FileInfoDb.Core.Hashing
 {
+    /// <summary>
+    /// SHA256-based implementation of <see cref="IHashProvider"/> 
+    /// </summary>
     public class SHA256HashProvider : IHashProvider
     {
         readonly ILogger m_Logger;

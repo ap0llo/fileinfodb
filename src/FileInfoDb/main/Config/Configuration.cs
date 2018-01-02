@@ -21,6 +21,7 @@ namespace FileInfoDb.Config
 
         public const string DebugConfigFileName = "config.Debug.json";
 
+
         public UpdateOptions UpdateOptions { get; }
 
         public HashingOptions HashingOptions { get; }

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileInfoDb.Config
 {
@@ -26,6 +22,5 @@ namespace FileInfoDb.Config
             EnableCache = true;
             CachePath = Path.Combine(ApplicationDirectories.RoamingAppData, "hashing.cache.db");
         }
-
     }
 }

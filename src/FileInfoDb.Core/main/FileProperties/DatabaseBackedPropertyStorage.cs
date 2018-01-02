@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Dapper;
 using Grynwald.Utilities.Data;
-using FileInfoDb.Core.Hashing;
 using MySql.Data.MySqlClient;
+using FileInfoDb.Core.Hashing;
 
 namespace FileInfoDb.Core.FileProperties
 {
+    /// <summary>
+    /// Implementation of <see cref="IPropertyStorage"/> bsed on a relational database
+    /// </summary>
     public class DatabaseBackedPropertyStorage : IPropertyStorage
     {
         readonly PropertiesDatabase m_Database;
@@ -50,10 +52,9 @@ namespace FileInfoDb.Core.FileProperties
             using (var connection = m_Database.OpenConnection())
             {
                 var properties = connection.Query<string>($@"
-                    SELECT DISTINCT
-                        {PropertiesTable.Column.Name}
-                    FROM  {PropertiesTable.Name};
-                    ");
+                    SELECT DISTINCT {PropertiesTable.Column.Name}
+                    FROM {PropertiesTable.Name};
+                ");
 
                 return properties.ToList();
             }
@@ -64,6 +65,7 @@ namespace FileInfoDb.Core.FileProperties
             using (var connection = m_Database.OpenConnection())
             using (var transaction = connection.BeginTransaction())
             {
+                // insert hash into database if it does not already exist
                 connection.ExecuteNonQuery($@"
                         INSERT IGNORE INTO {HashesTable.Name} 
                         (   
@@ -79,12 +81,12 @@ namespace FileInfoDb.Core.FileProperties
                         ("hash", fileHash.Value)
                     );
 
+                // get the id of the hash
                 var hashId = connection.QuerySingle<int>($@"
                     SELECT {HashesTable.Column.Id} 
                     FROM {HashesTable.Name}
                     WHERE {HashesTable.Column.Algorithm} = @algorithm AND
                           {HashesTable.Column.Hash} = @hash",
-
                     new
                     {
                         hash = fileHash.Value,
@@ -94,6 +96,7 @@ namespace FileInfoDb.Core.FileProperties
 
                 try
                 {
+                    // insert (or overwrite) the property
                     connection.ExecuteNonQuery($@"
                         {(overwrite ? "REPLACE" : "INSERT")} INTO {PropertiesTable.Name} 
                         (
@@ -111,6 +114,7 @@ namespace FileInfoDb.Core.FileProperties
                 //TODO: The MySQL specific exception should not be handled here, MySQL is a implementation detail of 'PropertiesDatabase'
                 catch (MySqlException ex) when (ex.Number == (int) MySqlErrorCode.DuplicateKeyEntry)
                 {
+                    // abort if the property already exists and overwrite was false
                     transaction.Rollback();
                     throw new PropertyAlreadyExistsException("Property already exists", ex);
                 }

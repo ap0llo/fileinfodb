@@ -1,6 +1,6 @@
-﻿using Grynwald.Utilities.Squirrel;
-using System;
+﻿using System;
 using System.IO;
+using Grynwald.Utilities.Squirrel;
 
 namespace FileInfoDb
 {

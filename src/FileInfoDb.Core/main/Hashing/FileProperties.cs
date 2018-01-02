@@ -2,6 +2,7 @@
 using System.IO;
 using NodaTime;
 using NodaTime.Extensions;
+
 using static System.IO.Path;
 
 namespace FileInfoDb.Core.Hashing

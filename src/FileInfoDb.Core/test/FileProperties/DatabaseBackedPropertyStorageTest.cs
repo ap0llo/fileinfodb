@@ -10,6 +10,7 @@ namespace FileInfoDb.Core.Test.FileProperties
     public class DatabaseBackedPropertyStorageTest : IDisposable
     {
         protected readonly Uri m_DatabaseUri;
+
         protected PropertiesDatabase Database { get; }
 
 
@@ -31,8 +32,8 @@ namespace FileInfoDb.Core.Test.FileProperties
             Database.Create();
         }
 
-
         public virtual void Dispose() => Database.Drop();
+
 
         HashValue GetRandomHashValue()
         {
@@ -44,7 +45,6 @@ namespace FileInfoDb.Core.Test.FileProperties
                             HashAlgorithm.SHA256);
             }
         }
-
 
 
         [Fact]
@@ -77,7 +77,6 @@ namespace FileInfoDb.Core.Test.FileProperties
             IPropertyStorage instance = new DatabaseBackedPropertyStorage(Database);
             Assert.Empty(instance.GetProperties(GetRandomHashValue()));            
         }
-
 
         [Fact]
         public void SetProperty_saves_new_property()
@@ -183,6 +182,5 @@ namespace FileInfoDb.Core.Test.FileProperties
             var newProperty = new Property("PROPERTY1", Guid.NewGuid().ToString());
             Assert.Throws<PropertyAlreadyExistsException>(() => instance.SetProperty(hash, newProperty, false));            
         }
-
     }
 }

@@ -16,7 +16,6 @@ using FileInfoDb.Core.Hashing.Cache;
 
 namespace FileInfoDb
 {
-
     partial class Program
     {
         readonly ILogger<Program> m_Logger;
@@ -50,7 +49,7 @@ namespace FileInfoDb
                             return -1;
                         });
             }            
-            catch (Exception ex) when(ex is ExecutionErrorException || ex is DatabaseAccessDeniedException)
+            catch (Exception ex) when (ex is ExecutionErrorException || ex is DatabaseAccessDeniedException)
             {
                 Console.Error.WriteLine(ex.Message);
                 return -1;
@@ -125,11 +124,11 @@ namespace FileInfoDb
         {
             m_Logger.LogInformation($"Running '{CommandNames.SetProperty}' command");
 
-            var hashProvider = GetHashProvider();
-            var hashedFile = hashProvider.GetFileHash(args.FilePath);
-            var db = GetDatabase(args);
-            var propertyStorage = new DatabaseBackedPropertyStorage(db);
+            var hashedFile = GetHashProvider().GetFileHash(args.FilePath);            
+            var propertyStorage = new DatabaseBackedPropertyStorage(GetDatabase(args));
 
+
+            // determine property value (either use value supplied on commandline or load from specified file)
             string value;
             if(String.IsNullOrEmpty(args.Value))
             {
@@ -144,6 +143,8 @@ namespace FileInfoDb
 
             var property = new Property(args.Name, value);
             m_Logger.LogInformation($"Setting property '{property.Name}' for file {hashedFile.Hash}");
+
+            // try to save the property
             try
             {
                 propertyStorage.SetProperty(hashedFile.Hash, property, args.Overwrite);
@@ -160,15 +161,15 @@ namespace FileInfoDb
         int GetProperty(GetPropertyArgs args)
         {
             m_Logger.LogInformation($"Running '{CommandNames.GetProperty}' command");
+            
+            var hashedFile = GetHashProvider().GetFileHash(args.FilePath);            
+            var propertyStorage = new DatabaseBackedPropertyStorage(GetDatabase(args));
 
-            var hashProvider = GetHashProvider();
-            var hashedFile = hashProvider.GetFileHash(args.FilePath);
-            var db = GetDatabase(args);
-            var propertyStorage = new DatabaseBackedPropertyStorage(db);
-
+            // load properties
             m_Logger.LogInformation($"Loading properties for file {hashedFile.Hash}");
             var properties = propertyStorage.GetProperties(hashedFile.Hash);
 
+            // filter properties if a name was specified
             if(!String.IsNullOrEmpty(args.Name))
             {
                 m_Logger.LogInformation($"Filtering properties using wildcard pattern '{args.Name}'");
@@ -176,6 +177,7 @@ namespace FileInfoDb
                 properties = properties.Where(p => wildcard.IsMatch(p.Name));
             }
 
+            // write properties to console
             foreach(var property in properties)
             {
                 Console.WriteLine(property);
@@ -187,10 +189,9 @@ namespace FileInfoDb
         int GetPropertyName(GetPropertyNameArgs args)
         {
             m_Logger.LogInformation($"Running '{CommandNames.GetPropertyName}' command");
-
-            var db = GetDatabase(args);
-            var propertyStorage = new DatabaseBackedPropertyStorage(db);
             
+            // get property names and write to console
+            var propertyStorage = new DatabaseBackedPropertyStorage(GetDatabase(args));
             foreach(var name in propertyStorage.GetPropertyNames())
             {
                 Console.WriteLine(name);
@@ -201,6 +202,7 @@ namespace FileInfoDb
 
         PropertiesDatabase GetDatabase(DatabaseArgs args)
         {
+            // if uri was specified as commandline parameter, use this uri, otherwise get uri from settings
             Uri uri;
             if(!String.IsNullOrEmpty(args.DatabaseUri))
             {
@@ -212,7 +214,7 @@ namespace FileInfoDb
                 m_Logger.LogInformation("Using database uri from configuration");
                 uri = new Uri(m_Configuration.DatabaseOptions.Uri);
 
-                
+                // if uri requires authentication, get username and password from Windows Credential Manager
                 if (m_Configuration.DatabaseOptions.CredentialSource == CredentialSource.WindowsCredentialManager)
                 {
                     m_Logger.LogInformation("Loading credentials from Windows Credentials manager");
@@ -237,9 +239,10 @@ namespace FileInfoDb
 
         IHashProvider GetHashProvider()
         {
-            // Setup
+            // initialize hash provider
             IHashProvider provider = new SHA256HashProvider(m_LoggerFactory.CreateLogger<SHA256HashProvider>());
 
+            // if enabled in settings, add cache
             var hashingOptions = m_Configuration.HashingOptions;
             if (hashingOptions.EnableCache)
             {

@@ -1,12 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace FileInfoDb.Config
 {
@@ -14,6 +11,7 @@ namespace FileInfoDb.Config
     {
         readonly ILogger m_Logger;
         readonly string m_Path;
+
 
         public ConfigurationWriter(ILogger logger, string path)
         {

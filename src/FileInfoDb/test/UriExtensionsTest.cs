@@ -5,7 +5,6 @@ namespace FileInfoDb.Test
 {
     public class UriExtensionsTest
     {
-
         [Theory]
         [InlineData("http://example.com/path")]
         [InlineData("http://example.com/path?query=foo")]
@@ -23,7 +22,6 @@ namespace FileInfoDb.Test
             Assert.Equal(uri.PathAndQuery, uriWithoutCredentials.PathAndQuery);
             Assert.Equal(uri.Port, uriWithoutCredentials.Port);            
         }
-
 
         [Theory]
         [InlineData("http://example.com/path", false)]

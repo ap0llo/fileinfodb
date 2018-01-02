@@ -1,15 +1,15 @@
-﻿using Grynwald.Utilities.Data;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Text;
+﻿using System.Data;
+using Grynwald.Utilities.Data;
 
 namespace FileInfoDb.Core.FileProperties
 {
+    /// <summary>
+    /// Helper class that defines the schema for the database table holding the hashes stored in the database
+    /// </summary>
     static class HashesTable
     {
-
         public const string Name = "Hashes";
+
 
         public enum Column
         {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using Microsoft.Extensions.Logging;
-using NodaTime.Extensions;
 
 namespace FileInfoDb.Core.Hashing.Cache
 {
