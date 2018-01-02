@@ -67,25 +67,8 @@ namespace FileInfoDb.Core.FileProperties
 
         static (string user, string password) GetUserInfo(Uri uri)
         {
-            var userInfo = uri.UserInfo;
-
-            if (String.IsNullOrEmpty(userInfo))
-                return (null, null);
-        
-            var fragments = userInfo.Split(new[] {':'}, StringSplitOptions.RemoveEmptyEntries);
-
-            switch (fragments.Length)
-            {
-                case 0:
-                    // should not happen (userInfo was already checked for null or empty)
-                    throw new InvalidOperationException();
-                case 1:
-                    return (fragments[0], null);
-                case 2:
-                    return (fragments[0], fragments[1]);
-                default:
-                    throw new InvalidDatabaseUriException(uri, "UserInfo is not a valid");
-            }
+            var uriBuilder = new UriBuilder(uri);
+            return (uriBuilder.UserName, uriBuilder.Password);
         }
     }
 }
