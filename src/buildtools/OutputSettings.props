@@ -16,7 +16,7 @@
       if the build number has not yet been set
     -->
     <AppVeyor Condition="'$(AppVeyor)' == ''">false</AppVeyor>
-    <BaseVersion>0.1.0</BaseVersion>
+    <BaseVersion>1.0.0</BaseVersion>
     <BaseVersion Condition="$(AppVeyor)">$(APPVEYOR_BUILD_VERSION)</BaseVersion>
 
     <!-- Build version info -->    
