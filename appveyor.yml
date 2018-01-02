@@ -16,5 +16,14 @@ artifacts:
   - path: .\Build\Release\Setup\*.nupkg
 
 skip_tags: true
+deploy:
+  release: v$(appveyor_build_version)
+  description: 'Automatic Release by AppVeyor'
+  provider: GitHub
+  auth_token:
+    secure: 05bBlMPb+yWwZBEN5UhlXn2tVaMao7KjbAvRBPuFZe7QtOTqpsw7y1vIa6yV/vga
+  prerelease: true
+  on:
+    branch: master
 
 
