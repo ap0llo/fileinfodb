@@ -7,6 +7,14 @@ are stored in a MySQL based database.
 Files are not identified by name but using a (SHA256) hash value of the
 file's content.
 
+Installation
+------------
+FileInfoDb is installed and updated using 
+[Squirrel](https://github.com/Squirrel/Squirrel.Windows).
+To install the latest version, download the latest Setup.exe from [Releases](https://github.com/ap0llo/fileinfodb/releases/).
+The application will check for updates in the background and install new 
+versions automatically.
+
 
 Usage
 ------
