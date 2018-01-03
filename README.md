@@ -12,7 +12,7 @@ Build Status
 ------------
 |**master**|**develop**|
 |:--:|:--:|
-|[![Build status](https://ci.appveyor.com/api/projects/status/boqw1m7byb96n6xf/branch/master?svg=true)](https://ci.appveyor.com/project/ap0llo/compare-and-copy/branch/master)|[![Build status](https://ci.appveyor.com/api/projects/status/boqw1m7byb96n6xf/branch/develop?svg=true)](https://ci.appveyor.com/project/ap0llo/compare-and-copy/branch/develop)|
+|[![Build status](https://ci.appveyor.com/api/projects/status/boqw1m7byb96n6xf/branch/master?svg=true)](https://ci.appveyor.com/project/ap0llo/fileinfodb/branch/master)|[![Build status](https://ci.appveyor.com/api/projects/status/boqw1m7byb96n6xf/branch/develop?svg=true)](https://ci.appveyor.com/project/ap0llo/fileinfodb/branch/develop)|
 
 
 Installation
