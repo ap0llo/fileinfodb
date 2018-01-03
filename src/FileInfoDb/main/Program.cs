@@ -98,7 +98,21 @@ namespace FileInfoDb
                 Console.Error.WriteLine(error);
                 return -1;
             }
-                    
+
+            
+            // if prompt-for-credentials switch was specified, read credentials from console
+            // and add credentials to uri (this will also overwrite other credentials if they are part of the uri)
+            if (args.PromptForCredentials)
+            {
+                Console.Write("User name: ");
+                var userName = Console.ReadLine();
+
+                Console.Write($"Password for user '{userName}': ");
+                var password = ConsoleHelper.ReadPassword();
+                
+                uri = uri.WithCredentials(userName, password);
+            }
+
             // check if uri contains a password
             // - if the uri contains a password, username and password are stored using the Windows Credential Manager,
             //   the uri without username or password is stored in config            
@@ -268,7 +282,7 @@ namespace FileInfoDb
             }
 
             return provider;
-        }
+        }              
     }
 }
     

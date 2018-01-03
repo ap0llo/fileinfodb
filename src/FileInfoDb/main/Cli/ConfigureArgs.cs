@@ -7,5 +7,9 @@ namespace FileInfoDb.Cli
     {
         [Option("uri", Required = true, HelpText ="The default database uri to save")]
         public string DatabaseUri { get; set; }
+
+        [Option("prompt-for-credentials", HelpText = "Prompt for username and password")]
+        public bool PromptForCredentials { get; set; }
+
     }
 }
