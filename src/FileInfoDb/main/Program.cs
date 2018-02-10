@@ -179,6 +179,14 @@ namespace FileInfoDb
             }
             catch (PropertyAlreadyExistsException)
             {
+                // ignore PropertyAlreadyExistsException if the value already in the database
+                // equals the value being set
+                var existingProperty = propertyStorage.GetProperty(hashedFile.Hash, property.Name);
+                if(property.Equals(existingProperty))
+                {
+                    return 0;
+                }
+
                 Console.Error.WriteLine($"Property '{property.Name}' has already been set for the file, use --overwrite to replace");
                 return -1;
             }
