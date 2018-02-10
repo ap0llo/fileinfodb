@@ -30,21 +30,29 @@ Usage
 ### Configuring the database connection: `configure`
 To configure the MySQL database to store properties in, run the `configure` 
 command and specify the database uri with a ``fileinfodb-mysql`` scheme.
-If the database server requires a username and password, provide this as 
-part of the uri, too.
-
-```batch
-fileinfodb configure --uri "fileinfodb-mysql://USER:PASSWORD@SERVER/DATABASENAME"
-```
-
-The configure command will save the uri in ``%APPDATA%\FileInfoDb\config.json``.
-
-**Note: FileInfoDb will not store username and password in the config file. 
-  Credentials are saved using the Windows Credetials Manager**
+This will save the default database uri to ``%APPDATA%\FileInfoDb\config.json``.
 
 Configuring the uri using the `configure` command is optional. Alternatively,
 you can pass the uri to use to each of the commands using the `--uri`
 commandline argument.
+
+If the database server requires a username and password, you can either
+ - include username and password in the uri or
+ - use the `--prompt-for-credentials` switch. FileInfoDb will then
+   prompt you to enter credentials. This way, the password will not 
+   show up in your console history.
+
+**Note: In both cases, the credentials will not be saved in the config file.
+        Instead, username and password are stroed using the Windows Credetials 
+        Manager.**
+
+```batch
+:: include credentials in uri
+fileinfodb configure --uri "fileinfodb-mysql://USER:PASSWORD@SERVER/DATABASENAME"
+
+:: make fileinfodb prompt for credentials
+fileinfodb configure --uri "fileinfodb-mysql://SERVER/DATABASENAME"  --prompt-for-credentials
+```
 
 
 ### Creating database and schema: `init`
