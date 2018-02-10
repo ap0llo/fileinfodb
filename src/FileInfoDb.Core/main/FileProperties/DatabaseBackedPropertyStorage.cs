@@ -22,6 +22,31 @@ namespace FileInfoDb.Core.FileProperties
         }
 
 
+        public Property GetProperty(HashValue fileHash, string propertyName)
+        {
+            using (var connection = m_Database.OpenConnection())
+            {
+                return connection.QuerySingleOrDefault<Property>($@"
+                    SELECT 
+                        {PropertiesTable.Column.Name}, 
+                        {PropertiesTable.Column.Value}
+                    FROM 
+                        {PropertiesTable.Name} JOIN 
+                        {HashesTable.Name} ON
+                        {HashesTable.Name}.{HashesTable.Column.Id} = {PropertiesTable.Column.HashId}
+                    WHERE {HashesTable.Column.Hash} = @hash AND
+                          {HashesTable.Column.Algorithm} = @algorithm AND
+                          {PropertiesTable.Column.Name} = @propertyName;
+                    ",
+                new
+                {
+                    hash = fileHash.Value,
+                    algorithm = fileHash.Algorithm.ToString(),
+                    propertyName = propertyName
+                });
+            }
+        }
+
         public IEnumerable<Property> GetProperties(HashValue fileHash)
         {
             using(var connection = m_Database.OpenConnection())
@@ -59,6 +84,7 @@ namespace FileInfoDb.Core.FileProperties
                 return properties.ToList();
             }
         }
+        
 
         public void SetProperty(HashValue fileHash, Property property, bool overwrite)
         {
@@ -113,7 +139,7 @@ namespace FileInfoDb.Core.FileProperties
                 }
                 //TODO: The MySQL specific exception should not be handled here, MySQL is a implementation detail of 'PropertiesDatabase'
                 catch (MySqlException ex) when (ex.Number == (int) MySqlErrorCode.DuplicateKeyEntry)
-                {
+                {                    
                     // abort if the property already exists and overwrite was false
                     transaction.Rollback();
                     throw new PropertyAlreadyExistsException("Property already exists", ex);

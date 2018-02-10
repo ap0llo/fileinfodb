@@ -79,6 +79,51 @@ namespace FileInfoDb.Core.Test.FileProperties
         }
 
         [Fact]
+        public void GetProperty_returns_null_for_unknown_file()
+        {
+            IPropertyStorage instance = new DatabaseBackedPropertyStorage(Database);
+            Assert.Null(instance.GetProperty(GetRandomHashValue(), "PropertyName"));
+        }
+
+        [Fact]
+        public void GetProperty_returns_null_if_property_with_specified_name_does_not_exist()
+        {
+            // ARRANGE
+            IPropertyStorage instance = new DatabaseBackedPropertyStorage(Database);
+            var hash = GetRandomHashValue();
+            var writtenProperty = new Property("Property1", "Value1");
+            instance.SetProperty(hash, writtenProperty, false);
+
+            // ACT
+            var readProperty = instance.GetProperty(hash, "Property2");
+
+            // ASSERT
+            Assert.Null(readProperty);
+        }
+
+        [Fact]
+        public void GetProperty_returns_the_expected_property()
+        {
+            // ARRANGE
+            IPropertyStorage instance = new DatabaseBackedPropertyStorage(Database);
+            var hash = GetRandomHashValue();
+            var writtenProperty1 = new Property("Property1", "Value1");
+            var writtenProperty2 = new Property("Property2", "Value2");
+            instance.SetProperty(hash, writtenProperty1, false);
+            instance.SetProperty(hash, writtenProperty2, false);
+
+            // ACT
+            var readProperty1 = instance.GetProperty(hash, "Property1");
+            var readProperty2 = instance.GetProperty(hash, "Property2");
+
+            // ASSERT
+            Assert.NotNull(readProperty1);
+            Assert.NotNull(readProperty2);
+            Assert.Equal(writtenProperty1, readProperty1);
+            Assert.Equal(writtenProperty2, readProperty2);
+        }
+
+        [Fact]
         public void SetProperty_saves_new_property()
         {
             IPropertyStorage instance = new DatabaseBackedPropertyStorage(Database);
@@ -136,7 +181,7 @@ namespace FileInfoDb.Core.Test.FileProperties
         }
 
         [Fact]
-        public void SetProperty_throws_PropertyAlreadyExistsException_whem_property_already_exists()
+        public void SetProperty_throws_PropertyAlreadyExistsException_when_property_already_exists()
         {
             // ARRANGE
             IPropertyStorage instance = new DatabaseBackedPropertyStorage(Database);
@@ -148,7 +193,7 @@ namespace FileInfoDb.Core.Test.FileProperties
             var newProperty = new Property("testproperty", Guid.NewGuid().ToString());
             Assert.Throws<PropertyAlreadyExistsException>(() => instance.SetProperty(hash, newProperty, false));            
         }
-
+        
         [Fact]
         public void Property_names_are_treated_case_insensitive_01()
         {
