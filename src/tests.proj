@@ -1,4 +1,5 @@
 <Project DefaultTargets="Test">
+
 	<PropertyGroup>
 		<Configuration Condition="'$(Configuration)' == '' ">Debug</Configuration>
 	</PropertyGroup>
