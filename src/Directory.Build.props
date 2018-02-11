@@ -8,6 +8,6 @@
 
 	<Import Project="$(BuildToolsDirectory)ProjectTypeInference.props" />
 	<Import Project="$(BuildToolsDirectory)OutputSettings.props" />
-	
+
 
 </Project>
