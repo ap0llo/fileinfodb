@@ -43,13 +43,14 @@ namespace FileInfoDb
                 });
 
                 return parser
-                    .ParseArguments<InitArgs, ConfigureArgs, SetPropertyArgs, GetPropertyArgs, GetPropertyNameArgs>(args)                    
+                    .ParseArguments<InitArgs, ConfigureArgs, SetPropertyArgs, GetPropertyArgs, GetPropertyNameArgs, IndexArgs>(args)                    
                     .MapResult(
                         (Func<InitArgs, int>)Init,
                         (Func<ConfigureArgs, int>)Configure,
                         (Func<SetPropertyArgs, int>)SetProperty,
                         (Func<GetPropertyArgs, int>)GetProperty,
                         (Func<GetPropertyNameArgs, int>)GetPropertyName,
+                        (Func<IndexArgs, int>)Index,
                         (IEnumerable<Error> errors) =>
                         {
                             if (errors.All(e => e is HelpRequestedError || e is HelpVerbRequestedError || e is VersionRequestedError))
@@ -231,6 +232,40 @@ namespace FileInfoDb
             foreach(var name in propertyStorage.GetPropertyNames())
             {
                 Console.WriteLine(name);
+            }
+
+            return 0;
+        }
+
+        int Index(IndexArgs args)
+        {
+            m_Logger.LogInformation($"Running '{CommandNames.Index}' command");
+
+            var hashingOptions = m_Configuration.HashingOptions;
+            if (!hashingOptions.EnableCache)
+            {
+                var message = "Cannot index directory because caching of hashes is disabled in the configuration file";
+                m_Logger.LogError(message);
+                throw new ExecutionErrorException(message);
+            }
+
+            if (!Directory.Exists(args.DirectoryPath))
+            {
+                var message = $"Directory '{args.DirectoryPath}' does not exist";
+                m_Logger.LogError(message);
+                throw new ExecutionErrorException(message);
+            }
+            
+            var hashProvider = GetHashProvider();
+
+            var files = Directory.EnumerateFiles(args.DirectoryPath, "*.*", args.Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+            foreach (var file in files)
+            {
+                m_Logger.LogInformation($"Indexing '{file}'");
+
+                //TODO: Make writing/updating the cache more explicit 
+                // (currently updating the cache is a side-effect of calling GetFileHash)
+                var hash = hashProvider.GetFileHash(file);                
             }
 
             return 0;

@@ -7,5 +7,6 @@
         public const string SetProperty = "Set-Property";
         public const string Init = "Init";
         public const string Configure = "Configure";
+        public const string Index = "Index";
     }
 }
