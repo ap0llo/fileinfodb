@@ -108,7 +108,7 @@ fileinfodb get-property --file FILEPATH --name "property1"
 fileinfodb get-property --file FILEPATH --name "property*"
 ```
 
-*Note: The hash for the file is not computed every time a proeprties are queried.
+*Note: The hash for the file is not computed every time a properties are queried.
        For details, see [File Hashing](#file-hashing).*
 
 
@@ -120,7 +120,30 @@ present in the database (regardless which files they are associated with)
 fileinfodb get-propertyname
 ```
 
+### Indexing directories: `index`
 
+Both `get-property` and `set-property` need to compute the hash of a file
+in order to identify it. The hah of a file is computed on demand but is cached
+in order to speed up future operations for a given file (see [File Hashing](#file-hashing)).
+
+Using the `index` command pre-computes the hashes for all files in a directory
+and stores them in the cache. This way the hash does not have to be computed the
+first time `set-property` or `get-property` is run.
+
+```batch
+:: index all files in the directory
+fileinfodb index --directory DIRECTORYPATH
+
+:: index all files in the directory (including files in sub-directories)
+fileinfodb index --directory DIRECTORYPATH --recursive
+
+:: --parallel runs indexing for multiple files in parallel (using all avaiable proccessors)
+fileinfodb index --directory DIRECTORYPATH --recursive --parallel
+
+:: --thread-count sets the number of tasks to run in parallel (default: number of logical processors)
+fileinfodb index --directory DIRECTORYPATH --recursive --parallel --thread-count 6
+
+```
 
 File Hashing
 ------------
@@ -138,8 +161,6 @@ if neither last wrtie time nor the file's size differ from the value in the
 database, use the cached value. 
 
 To clear the cache, simply delete `hashing.cache.db`.
-
-
 
 Acknowledgments
 ------------------------------------
