@@ -241,6 +241,7 @@ namespace FileInfoDb
         {
             m_Logger.LogInformation($"Running '{CommandNames.Index}' command");
 
+            // ensure cache is enabled
             var hashingOptions = m_Configuration.HashingOptions;
             if (!hashingOptions.EnableCache)
             {
@@ -249,6 +250,7 @@ namespace FileInfoDb
                 throw new ExecutionErrorException(message);
             }
 
+            // ensure directory exists
             if (!Directory.Exists(args.DirectoryPath))
             {
                 var message = $"Directory '{args.DirectoryPath}' does not exist";
@@ -256,17 +258,45 @@ namespace FileInfoDb
                 throw new ExecutionErrorException(message);
             }
             
-            var hashProvider = GetHashProvider();
+            
 
-            var files = Directory.EnumerateFiles(args.DirectoryPath, "*.*", args.Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
-            foreach (var file in files)
-            {
-                m_Logger.LogInformation($"Indexing '{file}'");
+            // determine number of threads to use for indexing (default 1)
+            var degreeOfParallelism = 1;
+            if(args.Parallel)
+            {                
+                if(args.ThreadCount != 0)
+                {
+                    if(args.ThreadCount < 1)
+                    {
+                        var message = $"Number of threads must be at least 1.";
+                        m_Logger.LogError(message);
+                        throw new ExecutionErrorException(message);
+                    }
 
-                //TODO: Make writing/updating the cache more explicit 
-                // (currently updating the cache is a side-effect of calling GetFileHash)
-                var hash = hashProvider.GetFileHash(file);                
+                    degreeOfParallelism = args.ThreadCount;
+                }
+                else
+                {
+                    degreeOfParallelism = Environment.ProcessorCount;
+                }
             }
+
+            m_Logger.LogInformation($"Using {degreeOfParallelism} thread(s) for indexing");
+
+            // index all the files
+            var hashProvider = GetHashProvider();
+            Directory.EnumerateFiles(args.DirectoryPath, "*.*", args.Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)
+                .AsParallel()
+                .WithDegreeOfParallelism(degreeOfParallelism)
+                .ForAll(file =>
+                {
+                    m_Logger.LogInformation($"Indexing '{file}'");
+
+                    //TODO: Make writing/updating the cache more explicit 
+                    // (currently updating the cache is a side-effect of calling GetFileHash)
+                    var hash = hashProvider.GetFileHash(file);
+                });
+
 
             return 0;
         }
