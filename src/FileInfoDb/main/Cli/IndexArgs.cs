@@ -17,5 +17,11 @@ namespace FileInfoDb.Cli
 
         [Option('r', "recursive", HelpText = "Index all subdirectories, too")]
         public bool Recursive { get; set; }
+
+        [Option("parallel", HelpText = "Speed up indexing by using multiple threads")]
+        public bool Parallel { get; set; }
+
+        [Option("thread-count", HelpText ="The number of threads to use when indexing in parallel (default: number of CPU cores)")]
+        public int ThreadCount { get; set; }
     }
 }
