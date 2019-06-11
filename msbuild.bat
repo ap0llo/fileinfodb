@@ -18,7 +18,7 @@ IF NOT EXIST %MSBuildPath% (
 ECHO MSBuild found at %MSBuildPath%
 
 if /I "%APPVEYOR%" == "True" ( 
-    SET LOGGER=/loggit rger:C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll
+    SET LOGGER=/logger:C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll
 ) else (
     SET LOGGER=
 )
