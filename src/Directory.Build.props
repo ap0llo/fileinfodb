@@ -6,6 +6,10 @@
 		<LangVersion>7.1</LangVersion>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="Nerdbank.GitVersioning" Version="2.3.179"/>
+	</ItemGroup>
+
 	<Import Project="$(BuildToolsDirectory)ProjectTypeInference.props" />
 	<Import Project="$(BuildToolsDirectory)OutputSettings.props" />
 

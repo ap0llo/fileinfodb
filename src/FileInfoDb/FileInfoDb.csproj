@@ -52,5 +52,18 @@
         <SetupInputFiles Include="$(OutputPath)*.dll" />        
     </ItemGroup>    
   </Target>
-  
+    
+  <Target Name="GetPackageVersionBeforeSetupBuild" DependsOnTargets="GetBuildVersion" BeforeTargets="BuildSetup">
+    <PropertyGroup>
+      <!-- 
+      Workaround for issue in package Grynwald.Utilities.Squirrel.Build:
+      Property _SetupPackageIdAndVersion is set when Grynwald.Utilities.Squirrel.Build.targets is evaluated.
+      However, $(PackageVersion) is not set at that time, so _SetupPackageIdAndVersion needs to overwritten
+      once the package version is known
+      -->
+      <_SetupPackageIdAndVersion>$(PackageId).$(PackageVersion)</_SetupPackageIdAndVersion> 
+    </PropertyGroup>
+  </Target>
+
+
 </Project>

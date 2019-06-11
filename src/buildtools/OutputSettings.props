@@ -8,25 +8,6 @@
 		<OutputPath>$(BaseOutputPath)$(Configuration)\$(MSBuildProjectName)\</OutputPath>
 		<SetupOutputPath>$(BaseOutputPath)$(Configuration)\Setup\</SetupOutputPath>
 		<TestResultOutputPath>$(BaseOutputPath)</TestResultOutputPath>
-
-		<!-- 
-		  Determine version and buildnumber 
-		  When building on AppVeyor, use the AppVeyor build number, otherwise default to 0,
-		  if the build number has not yet been set
-		-->
-		<AppVeyor Condition="'$(AppVeyor)' == ''">false</AppVeyor>
-		<IsReleaseBuild>false</IsReleaseBuild>
-		<IsReleaseBuild Condition="'$(APPVEYOR_REPO_BRANCH)' == 'master' AND '$(APPVEYOR_PULL_REQUEST_NUMBER)' == ''">true</IsReleaseBuild>
-		<BaseVersion>1.0.0</BaseVersion>
-		<BaseVersion Condition="$(AppVeyor)">$(APPVEYOR_BUILD_VERSION)</BaseVersion>
-
-		<!-- Build version info -->
-		<AssemblyVersion>$(BaseVersion)</AssemblyVersion>
-		<FileVersion>$(AssemblyVersion)</FileVersion>
-		<!--for nuget package version, semantic versioning can be used -->
-		<PackageVersion>$(BaseVersion)-dev</PackageVersion>
-		<PackageVersion Condition="$(IsReleaseBuild)">$(BaseVersion)</PackageVersion>
-		<InformationalVersion>$(PackageVersion)</InformationalVersion>
-
+		
 	</PropertyGroup>
 </Project>
