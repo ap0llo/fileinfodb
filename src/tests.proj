@@ -5,7 +5,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<TestProject Include="$(MSBuildThisFileDirectory)*/test/*.csproj" />
+		<TestProject Include="$(MSBuildThisFileDirectory)/*.Test/*.csproj" />
 	</ItemGroup>
 
 	<Target Name="Test">
