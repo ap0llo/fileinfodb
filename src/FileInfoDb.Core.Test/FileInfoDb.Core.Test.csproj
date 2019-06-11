@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\main\FileInfoDb.Core.csproj" />
+    <ProjectReference Include="..\FileInfoDb.Core\FileInfoDb.Core.csproj" />
   </ItemGroup>
 
   <!-- 

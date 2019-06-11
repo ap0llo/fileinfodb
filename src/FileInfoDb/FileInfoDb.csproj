@@ -5,7 +5,7 @@
     <TargetFramework>net461</TargetFramework>  
   </PropertyGroup>
 
-  <!-- Nuget package properties -->
+  <!-- NuGet package properties -->
   <PropertyGroup>
     <Authors>Andreas Gruenwald</Authors>
     <Description>FileInfoDb Command Line</Description>
@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\FileInfoDb.Core\main\FileInfoDb.Core.csproj" />
+    <ProjectReference Include="..\FileInfoDb.Core\FileInfoDb.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
