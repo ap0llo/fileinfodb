@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FileInfoDb.Core.Hashing
+namespace FileInfoDb.Hashing
 {
     /// <summary>
     /// Data-type used to provied the hash of a file

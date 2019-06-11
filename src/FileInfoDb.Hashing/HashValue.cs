@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace FileInfoDb.Core.Hashing
+namespace FileInfoDb.Hashing
 {
     public sealed class HashValue : IEquatable<HashValue>
     {

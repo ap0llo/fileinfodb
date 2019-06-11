@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Logging;
 
-namespace FileInfoDb.Core.Hashing
+namespace FileInfoDb.Hashing
 {
     /// <summary>
     /// SHA256-based implementation of <see cref="IHashProvider"/> 

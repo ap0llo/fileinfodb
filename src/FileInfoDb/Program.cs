@@ -11,8 +11,8 @@ using FileInfoDb.Cli;
 using FileInfoDb.Config;
 using FileInfoDb.Core;
 using FileInfoDb.Core.FileProperties;
-using FileInfoDb.Core.Hashing;
-using FileInfoDb.Core.Hashing.Cache;
+using FileInfoDb.Hashing;
+using FileInfoDb.Hashing.Cache;
 
 namespace FileInfoDb
 {

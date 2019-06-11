@@ -1,4 +1,4 @@
-﻿namespace FileInfoDb.Core.Hashing.Cache
+﻿namespace FileInfoDb.Hashing.Cache
 {
     /// <summary>
     /// Dummy implementation of <see cref="IHashedFileInfoCache"/>

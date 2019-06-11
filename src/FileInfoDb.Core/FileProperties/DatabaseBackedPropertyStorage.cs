@@ -4,7 +4,7 @@ using System.Linq;
 using Dapper;
 using Grynwald.Utilities.Data;
 using MySql.Data.MySqlClient;
-using FileInfoDb.Core.Hashing;
+using FileInfoDb.Hashing;
 
 namespace FileInfoDb.Core.FileProperties
 {

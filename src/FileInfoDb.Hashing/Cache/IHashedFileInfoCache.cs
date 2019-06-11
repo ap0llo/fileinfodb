@@ -1,4 +1,4 @@
-﻿namespace FileInfoDb.Core.Hashing.Cache
+﻿namespace FileInfoDb.Hashing.Cache
 {
     /// <summary>
     /// Interface that provides access to a cache of file-hashes

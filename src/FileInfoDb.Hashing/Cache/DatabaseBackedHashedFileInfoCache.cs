@@ -3,7 +3,7 @@ using Dapper;
 using Grynwald.Utilities.Data;
 using Microsoft.Data.Sqlite;
 
-namespace FileInfoDb.Core.Hashing.Cache
+namespace FileInfoDb.Hashing.Cache
 {
     /// <summary>
     /// Implementation of <see cref="IHashedFileInfoCache"/> taht is using 

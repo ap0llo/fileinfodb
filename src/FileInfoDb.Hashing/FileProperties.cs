@@ -5,7 +5,7 @@ using NodaTime.Extensions;
 
 using static System.IO.Path;
 
-namespace FileInfoDb.Core.Hashing
+namespace FileInfoDb.Hashing
 {
     /// <summary>
     /// Provides information about a file

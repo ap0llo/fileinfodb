@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 using FileInfoDb.Core.FileProperties;
-using FileInfoDb.Core.Hashing;
+using FileInfoDb.Hashing;
 
 namespace FileInfoDb.Core.Test.FileProperties
 {

@@ -2,7 +2,7 @@
 using System.IO;
 using Microsoft.Extensions.Logging;
 
-namespace FileInfoDb.Core.Hashing.Cache
+namespace FileInfoDb.Hashing.Cache
 {
     /// <summary>
     /// Implementation of <see cref="IHashProvider"/> that uses a cache to avoid 

@@ -1,4 +1,4 @@
-﻿namespace FileInfoDb.Core.Hashing
+﻿namespace FileInfoDb.Hashing
 {
     public enum HashAlgorithm
     {

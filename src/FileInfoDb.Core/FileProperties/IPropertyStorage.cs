@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using FileInfoDb.Core.Hashing;
+using FileInfoDb.Hashing;
 
 namespace FileInfoDb.Core.FileProperties
 {

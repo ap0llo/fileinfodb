@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FileInfoDb.Core
+namespace FileInfoDb.Hashing
 {
     /// <summary>
     /// Exception that is thrown when the database being access has a schema incompatible with

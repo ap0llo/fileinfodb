@@ -6,7 +6,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace FileInfoDb.Core.Hashing.Cache
+namespace FileInfoDb.Hashing.Cache
 {
     /// <summary>
     /// Helper class for accessing the SQLite-based cache 

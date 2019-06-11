@@ -1,7 +1,7 @@
 using System.Data;
 using Grynwald.Utilities.Data;
 
-namespace FileInfoDb.Core.Hashing.Cache
+namespace FileInfoDb.Hashing.Cache
 {
     /// <summary>
     /// Helper class that defines the schema for the SchmeaInfo table.
